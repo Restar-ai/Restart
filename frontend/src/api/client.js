@@ -6,7 +6,7 @@ async function request(method, path, body) {
     headers: { 'Content-Type': 'application/json' },
   }
 
-  if (body) {
+  if (body !== undefined) {
     options.body = JSON.stringify(body)
   }
 

@@ -1,13 +1,9 @@
-// GET /api/hello
+import { createEchoResponse, getHelloMessage } from '../services/helloService.js'
+
 export function getHello(_req, res) {
-  res.json({ message: 'Halo dari Express!' })
+  res.json(getHelloMessage())
 }
 
-// POST /api/echo
 export function postEcho(req, res) {
-  const body = req.body
-  if (!body || Object.keys(body).length === 0) {
-    return res.status(400).json({ message: 'Body tidak boleh kosong' })
-  }
-  res.json({ echo: body })
+  res.json(createEchoResponse(req.body))
 }
