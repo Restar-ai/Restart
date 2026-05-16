@@ -8,6 +8,9 @@ import {
   FiClock,
   FiActivity,
   FiBriefcase,
+  FiMessageCircle,
+  FiX,
+  FiSend,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
 import * as assessmentApi from "../api/assessmentApi";
@@ -21,6 +24,16 @@ export default function Dashboard() {
   const [enrollingCourseId, setEnrollingCourseId] = useState(null);
   const [activeTab, setActiveTab] = useState("enrolled");
   const [assessmentResult, setAssessmentResult] = useState(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      text: "Halo! Aku adalah AI Assistant. Bagaimana bisa aku membantu kamu hari ini?",
+      sender: "ai",
+      timestamp: new Date(),
+    },
+  ]);
+  const [chatInput, setChatInput] = useState("");
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -91,6 +104,33 @@ export default function Dashboard() {
   const handleStatClick = (statType) => {
     if (statType === "enrolled") setActiveTab("enrolled");
     else if (statType === "available") setActiveTab("available");
+  };
+
+  const handleSendMessage = () => {
+    if (chatInput.trim() === "") return;
+
+    // Add user message
+    const userMessage = {
+      id: messages.length + 1,
+      text: chatInput,
+      sender: "user",
+      timestamp: new Date(),
+    };
+
+    setMessages([...messages, userMessage]);
+    setChatInput("");
+
+    // TODO: Send to AI backend later
+    // For now, just show a placeholder response after a delay
+    setTimeout(() => {
+      const aiResponse = {
+        id: messages.length + 2,
+        text: "Terima kasih atas pertanyaanmu! AI sedang diproses... 🤖",
+        sender: "ai",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiResponse]);
+    }, 500);
   };
 
   if (!user || loading) {
@@ -419,6 +459,80 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Floating Chat Button */}
+      <button
+        onClick={() => setChatOpen(!chatOpen)}
+        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all hover:scale-110 z-40"
+        title="Buka Chat AI"
+      >
+        {chatOpen ? <FiX size={24} /> : <FiMessageCircle size={24} />}
+      </button>
+
+      {/* Chat Window */}
+      {chatOpen && (
+        <div className="fixed bottom-24 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-40 overflow-hidden">
+          {/* Chat Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex justify-between items-center">
+            <h3 className="font-semibold">AI Assistant</h3>
+            <button
+              onClick={() => setChatOpen(false)}
+              className="hover:bg-blue-800 p-1 rounded transition-colors"
+            >
+              <FiX size={20} />
+            </button>
+          </div>
+
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${
+                  message.sender === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-xs px-4 py-2 rounded-lg ${
+                    message.sender === "user"
+                      ? "bg-blue-600 text-white rounded-br-none"
+                      : "bg-gray-100 text-gray-900 rounded-bl-none"
+                  }`}
+                >
+                  <p className="text-sm">{message.text}</p>
+                  <span className="text-xs opacity-70 mt-1 block">
+                    {message.timestamp.toLocaleTimeString("id-ID", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Input Area */}
+          <div className="border-t border-gray-200 p-3 flex gap-2">
+            <input
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") handleSendMessage();
+              }}
+              placeholder="Ketik pesan..."
+              className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+            <button
+              onClick={handleSendMessage}
+              className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded transition-colors"
+              title="Kirim pesan"
+            >
+              <FiSend size={18} />
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
