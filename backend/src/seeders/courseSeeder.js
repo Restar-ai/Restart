@@ -23,7 +23,7 @@ export const seedCourses = () => {
         instructor: "Budi Santoso",
         category: "Web Development",
         image_url:
-          "https://images.unsplash.com/photo-1633356122544-f134324ef6db?w=400&h=250&fit=crop",
+          "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop",
         duration_hours: 40,
         difficulty_level: "Intermediate",
         price: 299999,
@@ -34,7 +34,7 @@ export const seedCourses = () => {
         instructor: "Dr. Rina Wijaya",
         category: "Data Science",
         image_url:
-          "https://images.unsplash.com/photo-1516321318423-f06f70d504f0?w=400&h=250&fit=crop",
+          "https://images.unsplash.com/photo-1649180556628-9ba704115795?w=400&h=250&fit=crop",
         duration_hours: 50,
         difficulty_level: "Intermediate",
         price: 349999,
@@ -67,7 +67,7 @@ export const seedCourses = () => {
         instructor: "Hendra Wijaya",
         category: "Mobile Development",
         image_url:
-          "https://images.unsplash.com/photo-1512941691920-25bda36dc643?w=400&h=250&fit=crop",
+          "https://images.unsplash.com/photo-1670057037226-b3d65909424f?w=400&h=250&fit=crop",
         duration_hours: 45,
         difficulty_level: "Intermediate",
         price: 349999,
@@ -78,7 +78,7 @@ export const seedCourses = () => {
         instructor: "Yuki Tanaka",
         category: "DevOps",
         image_url:
-          "https://images.unsplash.com/photo-1460925895917-acd400f3fe4b?w=400&h=250&fit=crop",
+          "https://images.unsplash.com/photo-1690627931320-16ac56eb2588?w=400&h=250&fit=crop",
         duration_hours: 40,
         difficulty_level: "Advanced",
         price: 399999,
