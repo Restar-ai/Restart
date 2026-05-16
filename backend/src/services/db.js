@@ -1,9 +1,7 @@
 import mysql from "mysql2";
 
-// Variabel connection global
 let db = null;
 
-// Mengambil koneksi MySQL
 const getConnection = () => {
   if (!db) {
     throw new Error("Database not initialized. Call initializeDatabase first.");
@@ -11,10 +9,8 @@ const getConnection = () => {
   return db;
 };
 
-// Inisialisasi database + tabel
 const initializeDatabase = () => {
   return new Promise((resolve, reject) => {
-    // Koneksi awal tanpa database dulu (untuk create database)
     const initialConnection = mysql.createConnection({
       host: process.env.DB_HOST || "localhost",
       port: process.env.DB_PORT || 3306,
@@ -22,7 +18,6 @@ const initializeDatabase = () => {
       password: process.env.DB_PASS || "",
     });
 
-    // Buat database jika belum ada
     initialConnection.query(
       `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME || "restart_db"}`,
       (err) => {
@@ -32,11 +27,8 @@ const initializeDatabase = () => {
           return;
         }
 
-        console.log(
-          `✓ Database ${process.env.DB_NAME || "restart_db"} sudah ada/dibuat`,
-        );
+        console.log(`✓ Database ${process.env.DB_NAME || "restart_db"} sudah ada/dibuat`);
 
-        // Koneksi ke database yang baru dibuat
         db = mysql.createConnection({
           host: process.env.DB_HOST || "localhost",
           port: process.env.DB_PORT || 3306,
@@ -52,11 +44,8 @@ const initializeDatabase = () => {
             return;
           }
 
-          console.log(
-            `✓ MySQL Connected to ${process.env.DB_NAME || "restart_db"}`,
-          );
+          console.log(`✓ MySQL Connected to ${process.env.DB_NAME || "restart_db"}`);
 
-          // Buat tabel users
           const createUsersTable = `
             CREATE TABLE IF NOT EXISTS users (
               id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,6 +57,7 @@ const initializeDatabase = () => {
               birth_date DATE NOT NULL,
               address TEXT NOT NULL,
               role ENUM('trainer','participant') NOT NULL DEFAULT 'participant',
+              assessment_completed BOOLEAN DEFAULT FALSE,
               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
@@ -81,24 +71,34 @@ const initializeDatabase = () => {
             }
             console.log("✓ Table users sudah ada/dibuat");
 
-            // Buat tabel courses
-            const createCoursesTable = `
-              CREATE TABLE IF NOT EXISTS courses (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                title VARCHAR(255) NOT NULL,
-                description TEXT,
-                instructor VARCHAR(255) NOT NULL,
-                category VARCHAR(100),
-                image_url VARCHAR(500),
-                duration_hours INT,
-                difficulty_level VARCHAR(50),
-                price DECIMAL(10,2),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-              )
-            `;
+            // Ensure assessment_completed column exists
+            const alterUsersTable = `ALTER TABLE users ADD COLUMN IF NOT EXISTS assessment_completed BOOLEAN DEFAULT FALSE`;
+            
+            db.query(alterUsersTable, (err) => {
+              if (err && err.code !== 'ER_DUP_FIELDNAME') {
+                console.warn("Warning altering users table:", err.message);
+              } else if (!err) {
+                console.log("✓ Column assessment_completed checked/added");
+              }
 
-            db.query(createCoursesTable, (err) => {
+              // Buat tabel courses
+              const createCoursesTable = `
+                CREATE TABLE IF NOT EXISTS courses (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  title VARCHAR(255) NOT NULL,
+                  description TEXT,
+                  instructor VARCHAR(255) NOT NULL,
+                  category VARCHAR(100),
+                  image_url VARCHAR(500),
+                  duration_hours INT,
+                  difficulty_level VARCHAR(50),
+                  price DECIMAL(10,2),
+                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                )
+              `;
+
+              db.query(createCoursesTable, (err) => {
               if (err) {
                 console.error("Error creating courses table:", err.message);
                 reject(err);
@@ -106,7 +106,6 @@ const initializeDatabase = () => {
               }
               console.log("✓ Table courses sudah ada/dibuat");
 
-              // Buat tabel user_courses
               const createUserCoursesTable = `
                 CREATE TABLE IF NOT EXISTS user_courses (
                   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -123,24 +122,65 @@ const initializeDatabase = () => {
 
               db.query(createUserCoursesTable, (err) => {
                 if (err) {
-                  console.error(
-                    "Error creating user_courses table:",
-                    err.message,
-                  );
+                  console.error("Error creating user_courses table:", err.message);
                   reject(err);
                   return;
                 }
                 console.log("✓ Table user_courses sudah ada/dibuat");
-                initialConnection.end();
-                resolve(db);
+
+                const createAssessmentAnswersTable = `
+                  CREATE TABLE IF NOT EXISTS assessment_answers (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id INT NOT NULL,
+                    question_id INT NOT NULL,
+                    answer INT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users(id),
+                    UNIQUE KEY unique_user_question(user_id, question_id)
+                  )
+                `;
+
+                db.query(createAssessmentAnswersTable, (err) => {
+                  if (err) {
+                    console.error("Error creating assessment_answers table:", err.message);
+                    reject(err);
+                    return;
+                  }
+                  console.log("✓ Table assessment_answers sudah ada/dibuat");
+
+                  const createAssessmentResultsTable = `
+                    CREATE TABLE IF NOT EXISTS assessment_results (
+                      id INT AUTO_INCREMENT PRIMARY KEY,
+                      user_id INT UNIQUE NOT NULL,
+                      physical_score DECIMAL(5,2),
+                      communication_score DECIMAL(5,2),
+                      problem_solving_score DECIMAL(5,2),
+                      personality_score DECIMAL(5,2),
+                      recommended_jobs JSON,
+                      completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                      FOREIGN KEY (user_id) REFERENCES users(id)
+                    )
+                  `;
+
+                  db.query(createAssessmentResultsTable, (err) => {
+                    if (err) {
+                      console.error("Error creating assessment_results table:", err.message);
+                      reject(err);
+                      return;
+                    }
+                    console.log("✓ Table assessment_results sudah ada/dibuat");
+                    initialConnection.end();
+                    resolve(db);
+                  });
+                });
               });
+            });
             });
           });
         });
-      },
+      }
     );
   });
 };
 
-// **Export**: named export supaya bisa import { getConnection, initializeDatabase }
 export { getConnection, initializeDatabase };

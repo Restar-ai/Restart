@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy, Component } from "react";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AssessmentPage from "./pages/AssessmentPage";
+import AssessmentResultPage from "./pages/AssessmentResultPage";
 
 // Lazy load dashboard untuk avoid issues
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
@@ -56,7 +58,45 @@ class ErrorBoundary extends Component {
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/" replace />;
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Trainer langsung bisa akses protected route (skip assessment)
+  if (user.role === "trainer") {
+    return children;
+  }
+
+  // Jika participant belum complete assessment, redirect ke assessment
+  if (user.role === "participant" && !user.assessment_completed) {
+    return <Navigate to="/assessment" replace />;
+  }
+
+  return children;
+}
+
+// Route untuk assessment - hanya bisa diakses participant yang belum complete assessment
+function AssessmentRoute({ children }) {
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Trainer tidak perlu assessment, redirect ke dashboard
+  if (user.role === "trainer") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Jika participant sudah complete assessment, redirect ke dashboard
+  if (user.assessment_completed) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
 }
 
 export default function App() {
@@ -66,6 +106,22 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route
+            path="/assessment"
+            element={
+              <AssessmentRoute>
+                <AssessmentPage />
+              </AssessmentRoute>
+            }
+          />
+          <Route
+            path="/assessment-result"
+            element={
+              <ProtectedRoute>
+                <AssessmentResultPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={

@@ -122,7 +122,7 @@ export default function Register() {
                 placeholder="John Doe"
                 value={form.name}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
                   errors.name ? 'border-red-500' : 'border-slate-200'
                 } bg-slate-50`}
               />
@@ -138,7 +138,7 @@ export default function Register() {
                 placeholder="contoh@email.com"
                 value={form.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
                   errors.email ? 'border-red-500' : 'border-slate-200'
                 } bg-slate-50`}
               />
@@ -154,7 +154,7 @@ export default function Register() {
                 placeholder="16 digit NIK"
                 value={form.nik}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
                   errors.nik ? 'border-red-500' : 'border-slate-200'
                 } bg-slate-50`}
               />
@@ -168,7 +168,7 @@ export default function Register() {
                 name="gender"
                 value={form.gender}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
                   errors.gender ? 'border-red-500' : 'border-slate-200'
                 } bg-slate-50`}
               >
@@ -188,7 +188,7 @@ export default function Register() {
                 name="birth_date"
                 value={form.birth_date}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
                   errors.birth_date ? 'border-red-500' : 'border-slate-200'
                 } bg-slate-50`}
               />
@@ -204,7 +204,7 @@ export default function Register() {
                 value={form.address}
                 onChange={handleChange}
                 rows="2"
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm resize-none ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm resize-none text-slate-900 ${
                   errors.address ? 'border-red-500' : 'border-slate-200'
                 } bg-slate-50`}
               />
@@ -221,7 +221,7 @@ export default function Register() {
                   placeholder="••••••••"
                   value={form.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm pr-10 ${
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm pr-10 text-slate-900 ${
                     errors.password ? 'border-red-500' : 'border-slate-200'
                   } bg-slate-50`}
                 />
@@ -246,7 +246,7 @@ export default function Register() {
                   placeholder="••••••••"
                   value={form.password_confirm}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm pr-10 ${
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm pr-10 text-slate-900 ${
                     errors.password_confirm ? 'border-red-500' : 'border-slate-200'
                   } bg-slate-50`}
                 />

@@ -7,8 +7,10 @@ import {
   FiPlayCircle,
   FiClock,
   FiActivity,
+  FiBriefcase,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
+import * as assessmentApi from "../api/assessmentApi";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -18,6 +20,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [enrollingCourseId, setEnrollingCourseId] = useState(null);
   const [activeTab, setActiveTab] = useState("enrolled");
+  const [assessmentResult, setAssessmentResult] = useState(null);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -50,6 +53,14 @@ export default function Dashboard() {
         completed: dashboardStats.completed_courses || 0,
         avgProgress: Math.round(dashboardStats.avg_progress || 0),
       });
+
+      // Fetch assessment results
+      try {
+        const result = await assessmentApi.getAssessmentResult(userId);
+        setAssessmentResult(result.result);
+      } catch (error) {
+        console.log("No assessment result yet");
+      }
     } catch (error) {
       console.error("Error loading dashboard:", error);
     } finally {
@@ -134,6 +145,74 @@ export default function Dashboard() {
             Lanjutkan perjalanan belajarmu hari ini
           </p>
         </div>
+
+        {/* Assessment Results Card */}
+        {assessmentResult && (
+          <div className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 sm:p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <FiBriefcase className="text-blue-600" size={24} />
+              <h3 className="text-lg font-semibold text-gray-900">Hasil Asesmen Kepribadian</h3>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <div className="bg-white rounded p-3 text-center">
+                <p className="text-xs text-gray-600 font-medium">Fisik</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{parseFloat(assessmentResult.physicalScore).toFixed(1)}</p>
+                <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                  <div 
+                    className="bg-blue-600 h-full rounded-full"
+                    style={{ width: `${(parseFloat(assessmentResult.physicalScore) / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded p-3 text-center">
+                <p className="text-xs text-gray-600 font-medium">Komunikasi</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{parseFloat(assessmentResult.communicationScore).toFixed(1)}</p>
+                <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                  <div 
+                    className="bg-green-600 h-full rounded-full"
+                    style={{ width: `${(parseFloat(assessmentResult.communicationScore) / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded p-3 text-center">
+                <p className="text-xs text-gray-600 font-medium">Problem Solving</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{parseFloat(assessmentResult.problemSolvingScore).toFixed(1)}</p>
+                <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                  <div 
+                    className="bg-yellow-600 h-full rounded-full"
+                    style={{ width: `${(parseFloat(assessmentResult.problemSolvingScore) / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded p-3 text-center">
+                <p className="text-xs text-gray-600 font-medium">Kepribadian</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{parseFloat(assessmentResult.personalityScore).toFixed(1)}</p>
+                <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                  <div 
+                    className="bg-purple-600 h-full rounded-full"
+                    style={{ width: `${(parseFloat(assessmentResult.personalityScore) / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded p-3 sm:p-4">
+              <p className="text-sm font-semibold text-gray-900 mb-3">Rekomendasi Pekerjaan untuk Anda:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {assessmentResult.recommendedJobs && assessmentResult.recommendedJobs.map((job, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-sm text-gray-700 bg-blue-50 px-3 py-2 rounded">
+                    <span className="text-blue-600 font-semibold">{idx + 1}.</span>
+                    <span>{job}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stats Cards - Smaller & Clickable */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">

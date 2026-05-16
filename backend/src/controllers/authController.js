@@ -149,6 +149,7 @@ const login = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            assessment_completed: user.assessment_completed || false,
           },
         });
       },

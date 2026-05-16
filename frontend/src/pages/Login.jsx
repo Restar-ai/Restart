@@ -72,7 +72,7 @@ export default function Login() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition bg-slate-50"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition bg-slate-50 text-slate-900"
               />
             </div>
 
@@ -87,7 +87,7 @@ export default function Login() {
                   value={form.password}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition bg-slate-50"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition bg-slate-50 text-slate-900"
                 />
                 <button
                   type="button"
