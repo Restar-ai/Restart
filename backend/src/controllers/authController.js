@@ -81,6 +81,10 @@ const register = async (req, res) => {
                 id: result.insertId,
                 name,
                 email,
+                nik,
+                gender,
+                birth_date,
+                address,
                 role,
               },
             });
@@ -148,6 +152,10 @@ const login = async (req, res) => {
             id: user.id,
             name: user.name,
             email: user.email,
+            nik: user.nik,
+            gender: user.gender,
+            birth_date: user.birth_date,
+            address: user.address,
             role: user.role,
             assessment_completed: user.assessment_completed || false,
           },
@@ -161,4 +169,37 @@ const login = async (req, res) => {
   }
 };
 
-export { register, login };
+const updateAddress = async (req, res) => {
+  try {
+    const { address, user_id } = req.body;
+
+    if (!address || !user_id) {
+      return res.status(400).json({
+        message: "Alamat dan user_id harus diisi",
+      });
+    }
+
+    getConnection().query(
+      "UPDATE users SET address = ? WHERE id = ?",
+      [address, user_id],
+      (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            message: "Gagal update alamat",
+          });
+        }
+
+        res.json({
+          message: "Alamat berhasil diperbarui",
+          address,
+        });
+      },
+    );
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export { register, login, updateAddress };

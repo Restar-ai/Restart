@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FiLogOut,
   FiBook,
@@ -11,11 +12,13 @@ import {
   FiMessageCircle,
   FiX,
   FiSend,
+  FiUser,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
 import * as assessmentApi from "../api/assessmentApi";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -84,7 +87,7 @@ export default function Dashboard() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/";
+    navigate("/");
   };
 
   const handleEnrollCourse = async (courseId) => {
@@ -164,13 +167,22 @@ export default function Dashboard() {
                 Restart Career Platform
               </p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-sm transition-colors"
-            >
-              <FiLogOut size={16} />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => navigate("/profile")}
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded font-medium text-sm transition-colors"
+              >
+                <FiUser size={16} />
+                <span className="hidden sm:inline">Profile</span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-sm transition-colors"
+              >
+                <FiLogOut size={16} />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>

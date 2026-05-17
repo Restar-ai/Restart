@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AssessmentPage from "./pages/AssessmentPage";
 import AssessmentResultPage from "./pages/AssessmentResultPage";
+import ProfilePage from "./pages/ProfilePage";
 
 // Lazy load dashboard untuk avoid issues
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
@@ -129,6 +130,14 @@ export default function App() {
                 <Suspense fallback={<LoadingPage />}>
                   <DashboardPage />
                 </Suspense>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />
