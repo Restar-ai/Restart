@@ -1,0 +1,95 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Budi Santoso",
+      "email": "budi@pelatihan.com",
+      "password": "$2b$10$tfVASwNeE9jTU300G036he9Ki4Q6FfZJfaxhqqJQSJ//CnE2VNzkO",
+      "nik": "1234567890123456",
+      "gender": "male",
+      "birth_date": "1985-05-15",
+      "address": "Jakarta Timur, Indonesia",
+      "role": "trainer",
+      "created_at": "2026-05-20T15:33:59.093Z",
+      "updated_at": "2026-05-20T15:33:59.093Z"
+    },
+    {
+      "id": 2,
+      "name": "Siti Nurhaliza",
+      "email": "siti@pelatihan.com",
+      "password": "$2b$10$fuWICYJnV9D/gV/vMtk/su0lP8eldXMS.zwlE5AxoMT3v1R6ycQkC",
+      "nik": "1234567890123457",
+      "gender": "female",
+      "birth_date": "1990-08-20",
+      "address": "Bandung, Indonesia",
+      "role": "trainer",
+      "created_at": "2026-05-20T15:33:59.225Z",
+      "updated_at": "2026-05-20T15:33:59.225Z"
+    },
+    {
+      "id": 3,
+      "name": "Ahmad Riswanto",
+      "email": "ahmad@pelatihan.com",
+      "password": "$2b$10$dQSdZzg7Faog3Gcxt4tlH.7HnunlGkmQ2FAs9cB3va1lBhMyujBJK",
+      "nik": "1234567890123458",
+      "gender": "male",
+      "birth_date": "1988-03-10",
+      "address": "Surabaya, Indonesia",
+      "role": "trainer",
+      "created_at": "2026-05-20T15:33:59.359Z",
+      "updated_at": "2026-05-20T15:33:59.359Z"
+    },
+    {
+      "id": 4,
+      "name": "Hendra Wijaya",
+      "email": "hendra@email.com",
+      "password": "$2b$10$61bibHZQ2zRFzEDNNche8uBJzNZowGpwh53xFqQ0vgNHcDjDy4e16",
+      "nik": "1234567890123459",
+      "gender": "male",
+      "birth_date": "1990-07-22",
+      "address": "Medan, Indonesia",
+      "role": "participant",
+      "created_at": "2026-05-20T15:54:37.953Z",
+      "updated_at": "2026-05-20T15:54:37.953Z"
+    },
+    {
+      "id": 5,
+      "name": "Sari Kusuma",
+      "email": "sari@email.com",
+      "password": "$2b$10$6GfCbgwTjPQ2pJAckg8p3.n3YM1CUsbWFjnAFDUxIrv6QvtVs.366",
+      "nik": "1234567890123460",
+      "gender": "female",
+      "birth_date": "1992-12-08",
+      "address": "Yogyakarta, Indonesia",
+      "role": "participant",
+      "created_at": "2026-05-20T15:54:38.095Z",
+      "updated_at": "2026-05-20T15:54:38.095Z"
+    },
+    {
+      "id": 6,
+      "name": "Eko Prasetyo",
+      "email": "eko@email.com",
+      "password": "$2b$10$2Sos8s4PCWo.eIFFnnI9fOojL9D8K2T2qWo8iXgVpmjHtNIvPA4.y",
+      "nik": "1234567890123461",
+      "gender": "male",
+      "birth_date": "1988-04-11",
+      "address": "Semarang, Indonesia",
+      "role": "participant",
+      "created_at": "2026-05-20T15:54:38.236Z",
+      "updated_at": "2026-05-20T15:54:38.236Z"
+    },
+    {
+      "id": 7,
+      "name": "Yuni Hartati",
+      "email": "yuni@email.com",
+      "password": "$2b$10$mCCy0jdZ4f64o0u.hti24eqRRZPfN/JDgTPA5TCr2C43paHsw1WHm",
+      "nik": "1234567890123462",
+      "gender": "female",
+      "birth_date": "1991-09-30",
+      "address": "Makassar, Indonesia",
+      "role": "participant",
+      "created_at": "2026-05-20T15:54:38.365Z",
+      "updated_at": "2026-05-20T15:54:38.365Z"
+    }
+  ]
+}

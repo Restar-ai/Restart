@@ -138,3 +138,76 @@ export const getDashboardStats = (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getTrainerDashboard = (req, res) => {
+  try {
+    const db = getConnection();
+
+    // Get all participants
+    db.query(
+      `SELECT id, name, email, role FROM users WHERE role = 'participant'`,
+      (err, participants) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        // Get stats for each participant
+        const participantsWithStats = participants.map((participant) => {
+          return new Promise((resolve) => {
+            db.query(
+              `SELECT 
+                COUNT(*) as total_courses,
+                COALESCE(SUM(CASE WHEN completed_at IS NOT NULL THEN 1 ELSE 0 END), 0) as completed_courses,
+                COALESCE(AVG(progress_percentage), 0) as avg_progress
+               FROM user_courses WHERE user_id = ?`,
+              [participant.id],
+              (err, stats) => {
+                if (err) {
+                  resolve({ ...participant, stats: {} });
+                } else {
+                  resolve({
+                    ...participant,
+                    stats: stats[0] || {
+                      total_courses: 0,
+                      completed_courses: 0,
+                      avg_progress: 0,
+                    },
+                  });
+                }
+              },
+            );
+          });
+        });
+
+        Promise.all(participantsWithStats).then((result) => {
+          // Calculate overall stats
+          const totalParticipants = result.length;
+          const totalCompleted = result.reduce(
+            (sum, p) => sum + (p.stats.completed_courses || 0),
+            0,
+          );
+          const successPercentage =
+            totalParticipants > 0
+              ? Math.round((totalCompleted / totalParticipants) * 100)
+              : 0;
+          const avgProgress =
+            result.length > 0
+              ? Math.round(
+                  result.reduce(
+                    (sum, p) => sum + (p.stats.avg_progress || 0),
+                    0,
+                  ) / result.length,
+                )
+              : 0;
+
+          res.json({
+            totalParticipants,
+            successPercentage,
+            avgProgress,
+            participants: result,
+          });
+        });
+      },
+    );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

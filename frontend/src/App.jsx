@@ -6,8 +6,10 @@ import AssessmentPage from "./pages/AssessmentPage";
 import AssessmentResultPage from "./pages/AssessmentResultPage";
 import ProfilePage from "./pages/ProfilePage";
 
-// Lazy load dashboard untuk avoid issues
+// Lazy load dashboards dan pages untuk avoid issues
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const TrainerDashboard = lazy(() => import("./pages/TrainerDashboard"));
+const ParticipantProfile = lazy(() => import("./pages/ParticipantProfile"));
 
 // Loading fallback
 function LoadingPage() {
@@ -100,6 +102,17 @@ function AssessmentRoute({ children }) {
   return children;
 }
 
+// Role-based dashboard component
+function Dashboard() {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  if (user.role === "trainer") {
+    return <TrainerDashboard />;
+  } else {
+    return <DashboardPage />;
+  }
+}
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -128,7 +141,7 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Suspense fallback={<LoadingPage />}>
-                  <DashboardPage />
+                  <Dashboard />
                 </Suspense>
               </ProtectedRoute>
             }
@@ -138,6 +151,16 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/participant/:id"
+            element={
+              <ProtectedRoute>
+                <Suspense fallback={<LoadingPage />}>
+                  <ParticipantProfile />
+                </Suspense>
               </ProtectedRoute>
             }
           />

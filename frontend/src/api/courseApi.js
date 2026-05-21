@@ -64,3 +64,12 @@ export const getDashboardStats = async (userId) => {
     throw error;
   }
 };
+
+export const getTrainerDashboard = async () => {
+  try {
+    const response = await client.get("/trainer/dashboard");
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

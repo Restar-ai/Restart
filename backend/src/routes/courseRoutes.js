@@ -9,5 +9,6 @@ router.get("/users/:userId/courses", courseController.getUserCourses);
 router.post("/enroll", courseController.enrollCourse);
 router.put("/progress", courseController.updateCourseProgress);
 router.get("/users/:userId/stats", courseController.getDashboardStats);
+router.get("/trainer/dashboard", courseController.getTrainerDashboard);
 
 export default router;
