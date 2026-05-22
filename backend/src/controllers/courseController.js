@@ -143,6 +143,26 @@ export const getTrainerDashboard = (req, res) => {
   try {
     const db = getConnection();
 
+    const normalizeParticipantStats = (statsRow = {}) => {
+      const totalCourses = Number(statsRow.total_courses || 0);
+      const completedCourses = Number(statsRow.completed_courses || 0);
+      const avgProgress = Number(statsRow.avg_progress || 0);
+
+      let status = "not-started";
+      if (totalCourses > 0 && completedCourses >= totalCourses) {
+        status = "completed";
+      } else if (completedCourses > 0 && completedCourses < totalCourses) {
+        status = "in-progress";
+      }
+
+      return {
+        total_courses: totalCourses,
+        completed_courses: completedCourses,
+        avg_progress: avgProgress,
+        status,
+      };
+    };
+
     // Get all participants
     db.query(
       `SELECT id, name, email, role FROM users WHERE role = 'participant'`,
@@ -161,16 +181,9 @@ export const getTrainerDashboard = (req, res) => {
               [participant.id],
               (err, stats) => {
                 if (err) {
-                  resolve({ ...participant, stats: {} });
+                    resolve({ ...participant, stats: normalizeParticipantStats() });
                 } else {
-                  resolve({
-                    ...participant,
-                    stats: stats[0] || {
-                      total_courses: 0,
-                      completed_courses: 0,
-                      avg_progress: 0,
-                    },
-                  });
+                    resolve({ ...participant, stats: normalizeParticipantStats(stats[0]) });
                 }
               },
             );
@@ -180,19 +193,24 @@ export const getTrainerDashboard = (req, res) => {
         Promise.all(participantsWithStats).then((result) => {
           // Calculate overall stats
           const totalParticipants = result.length;
-          const totalCompleted = result.reduce(
-            (sum, p) => sum + (p.stats.completed_courses || 0),
-            0,
-          );
+          const completedParticipants = result.filter(
+            (participant) => participant.stats.status === "completed",
+          ).length;
           const successPercentage =
             totalParticipants > 0
-              ? Math.round((totalCompleted / totalParticipants) * 100)
+              ? Math.round((completedParticipants / totalParticipants) * 100)
               : 0;
+          const inProgressParticipants = result.filter(
+            (participant) => participant.stats.status === "in-progress",
+          ).length;
+          const notStartedParticipants = result.filter(
+            (participant) => participant.stats.status === "not-started",
+          ).length;
           const avgProgress =
             result.length > 0
               ? Math.round(
                   result.reduce(
-                    (sum, p) => sum + (p.stats.avg_progress || 0),
+                    (sum, p) => sum + (Number(p.stats.avg_progress) || 0),
                     0,
                   ) / result.length,
                 )
@@ -202,6 +220,9 @@ export const getTrainerDashboard = (req, res) => {
             totalParticipants,
             successPercentage,
             avgProgress,
+            completedParticipants,
+            inProgressParticipants,
+            notStartedParticipants,
             participants: result,
           });
         });
