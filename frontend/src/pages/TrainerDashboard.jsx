@@ -46,9 +46,9 @@ export default function TrainerDashboard() {
   };
 
   const getStatusVariant = (status) => {
-    if (status === "completed") return "bg-green-100 text-green-800 border-green-200";
-    if (status === "in-progress") return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    return "bg-red-100 text-red-800 border-red-200";
+    if (status === "completed") return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    if (status === "in-progress") return "bg-amber-50 text-amber-700 border-amber-200";
+    return "bg-rose-50 text-rose-700 border-rose-200";
   };
 
   const getStatusCount = (status) => {
@@ -104,10 +104,10 @@ export default function TrainerDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[linear-gradient(135deg,_#CCD8E6_0%,_#F7F6EE_52%,_#233B5E_160%)] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Memuat data...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-[#233B5E]"></div>
+          <p className="text-[#233B5E]">Memuat data...</p>
         </div>
       </div>
     );
@@ -116,14 +116,14 @@ export default function TrainerDashboard() {
   const filteredParticipants = getFilteredParticipants();
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="border-b border-gray-200 bg-white/90 backdrop-blur">
+    <div className="min-h-screen bg-[linear-gradient(180deg,_#F7F6EE_0%,_#FFFFFF_30%,_#F7F6EE_100%)]">
+      <div className="border-b border-white/60 bg-white/78 backdrop-blur-xl shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-[#233B5E]">
               Dashboard Pelatih
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-slate-500 mt-1">
               Pemantauan peserta dan progres pelatihan
             </p>
           </div>
@@ -131,14 +131,14 @@ export default function TrainerDashboard() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/profile")}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 transition hover:text-gray-950"
+              className="inline-flex items-center gap-2 rounded-full border border-[#CCD8E6] bg-white px-4 py-2 text-sm font-semibold text-[#233B5E] shadow-sm transition hover:-translate-y-0.5 hover:border-[#233B5E] hover:shadow-md"
             >
               <FiUser size={16} />
               Profil
             </button>
             <button
               onClick={handleLogoutRequest}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-red-500 transition hover:text-red-600"
+              className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-600 shadow-sm transition hover:-translate-y-0.5 hover:bg-red-50 hover:shadow-md"
             >
               <FiLogOut size={16} />
               Keluar
@@ -149,29 +149,29 @@ export default function TrainerDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold text-[#233B5E]">
             Selamat datang, {user?.name?.split(" ")[0]}
           </h2>
-          <p className="text-gray-600 mt-2">
+          <p className="text-slate-600 mt-2">
             Pantau dan kelola perkembangan peserta Anda
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition">
+          <div className="rounded-2xl border border-[#CCD8E6] bg-white/90 p-6 shadow-[0_18px_50px_rgba(35,59,94,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(35,59,94,0.12)]">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold tracking-wide mb-1">
+                <p className="mb-1 text-xs font-semibold tracking-wide text-slate-500">
                   TOTAL
                 </p>
-                <p className="text-gray-500 text-xs font-semibold tracking-wide">
+                <p className="text-xs font-semibold tracking-wide text-slate-500">
                   PESERTA
                 </p>
-                <p className="text-4xl font-bold text-gray-900 mt-3">
+                <p className="mt-3 text-4xl font-bold text-[#233B5E]">
                   {dashboardData?.totalParticipants || 0}
                 </p>
-                <p className="text-xs text-gray-500 mt-2">
-                  <span className="text-blue-600 font-medium">
+                <p className="mt-2 text-xs text-slate-500">
+                  <span className="font-medium text-[#233B5E]">
                     {getStatusCount("completed")} selesai
                   </span>{" "}
                   •{" "}
@@ -180,70 +180,70 @@ export default function TrainerDashboard() {
                   </span>
                 </p>
               </div>
-              <div className="bg-blue-100 p-4 rounded-xl">
-                <FiUsers className="w-8 h-8 text-blue-600" />
+              <div className="rounded-xl bg-[#CCD8E6] p-4">
+                <FiUsers className="h-8 w-8 text-[#233B5E]" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition">
+          <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-6 shadow-[0_18px_50px_rgba(16,185,129,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(16,185,129,0.12)]">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold tracking-wide mb-1">
+                <p className="mb-1 text-xs font-semibold tracking-wide text-slate-500">
                   TINGKAT
                 </p>
-                <p className="text-gray-500 text-xs font-semibold tracking-wide">
+                <p className="text-xs font-semibold tracking-wide text-slate-500">
                   KELULUSAN
                 </p>
-                <p className="text-4xl font-bold text-blue-600 mt-3">
+                <p className="mt-3 text-4xl font-bold text-emerald-700">
                   {dashboardData?.successPercentage || 0}%
                 </p>
-                <div className="w-24 bg-gray-200 rounded-full h-1.5 mt-3">
+                <div className="mt-3 h-1.5 w-24 rounded-full bg-emerald-100">
                   <div
-                    className="bg-blue-600 h-1.5 rounded-full"
+                    className="h-1.5 rounded-full bg-emerald-500"
                     style={{
                       width: `${Math.min(dashboardData?.successPercentage || 0, 100)}%`,
                     }}
                   ></div>
                 </div>
               </div>
-              <div className="bg-blue-100 p-4 rounded-xl">
-                <FiTrendingUp className="w-8 h-8 text-blue-600" />
+              <div className="rounded-xl bg-emerald-100 p-4">
+                <FiTrendingUp className="h-8 w-8 text-emerald-700" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition">
+          <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-6 shadow-[0_18px_50px_rgba(245,158,11,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(245,158,11,0.12)]">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-500 text-xs font-semibold tracking-wide mb-1">
+                <p className="mb-1 text-xs font-semibold tracking-wide text-slate-500">
                   RATA-RATA
                 </p>
-                <p className="text-gray-500 text-xs font-semibold tracking-wide">
+                <p className="text-xs font-semibold tracking-wide text-slate-500">
                   PROGRES
                 </p>
-                <p className="text-4xl font-bold text-gray-900 mt-3">
+                <p className="mt-3 text-4xl font-bold text-amber-700">
                   {dashboardData?.avgProgress || 0}%
                 </p>
-                <div className="w-24 bg-gray-200 rounded-full h-1.5 mt-3">
+                <div className="mt-3 h-1.5 w-24 rounded-full bg-amber-100">
                   <div
-                    className="bg-gray-900 h-1.5 rounded-full"
+                    className="h-1.5 rounded-full bg-amber-500"
                     style={{
                       width: `${Math.min(dashboardData?.avgProgress || 0, 100)}%`,
                     }}
                   ></div>
                 </div>
               </div>
-              <div className="bg-gray-100 p-4 rounded-xl">
-                <FiActivity className="w-8 h-8 text-gray-900" />
+              <div className="rounded-xl bg-amber-100 p-4">
+                <FiActivity className="h-8 w-8 text-amber-700" />
               </div>
             </div>
           </div>
         </div>
 
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-gray-900">Data Peserta</h3>
-          <p className="text-gray-600 text-sm mt-1">
+          <h3 className="text-2xl font-bold text-[#233B5E]">Data Peserta</h3>
+          <p className="mt-1 text-sm text-slate-600">
             Pantau perkembangan dan kelola program pelatihan peserta
           </p>
         </div>
@@ -253,8 +253,8 @@ export default function TrainerDashboard() {
             onClick={() => setFilterStatus("all")}
             className={`px-4 py-2 rounded-lg font-medium transition ${
               filterStatus === "all"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-emerald-500 text-white"
+                : "bg-white text-[#233B5E] border border-[#CCD8E6] hover:bg-[#F7F6EE]"
             }`}
           >
             Semua ({dashboardData?.participants?.length || 0})
@@ -263,8 +263,8 @@ export default function TrainerDashboard() {
             onClick={() => setFilterStatus("completed")}
             className={`px-4 py-2 rounded-lg font-medium transition ${
               filterStatus === "completed"
-                ? "bg-green-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-amber-500 text-white"
+                : "bg-white text-[#233B5E] border border-[#CCD8E6] hover:bg-[#F7F6EE]"
             }`}
           >
             Selesai ({getStatusCount("completed")})
@@ -273,8 +273,8 @@ export default function TrainerDashboard() {
             onClick={() => setFilterStatus("in-progress")}
             className={`px-4 py-2 rounded-lg font-medium transition ${
               filterStatus === "in-progress"
-                ? "bg-yellow-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-rose-500 text-white"
+                : "bg-white text-[#233B5E] border border-[#CCD8E6] hover:bg-[#F7F6EE]"
             }`}
           >
             Dalam Proses ({getStatusCount("in-progress")})
@@ -283,32 +283,32 @@ export default function TrainerDashboard() {
             onClick={() => setFilterStatus("not-started")}
             className={`px-4 py-2 rounded-lg font-medium transition ${
               filterStatus === "not-started"
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-[#233B5E] text-white"
+                : "bg-white text-[#233B5E] border border-[#CCD8E6] hover:bg-[#F7F6EE]"
             }`}
           >
             Belum Mulai ({getStatusCount("not-started")})
           </button>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="overflow-hidden rounded-2xl border border-[#CCD8E6] bg-white/90 shadow-[0_18px_50px_rgba(35,59,94,0.08)]">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                <tr className="border-b border-[#CCD8E6] bg-[#F7F6EE]">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-[#233B5E]">
                     Nama
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-[#233B5E]">
                     Email
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-[#233B5E]">
                     Progress
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-[#233B5E]">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-[#233B5E]">
                     Aksi
                   </th>
                 </tr>
@@ -318,25 +318,25 @@ export default function TrainerDashboard() {
                   filteredParticipants.map((participant) => (
                     <tr
                       key={participant.id}
-                      className="border-b border-gray-100 hover:bg-gray-50"
+                      className="border-b border-[#CCD8E6]/70 hover:bg-[#F7F6EE]"
                     >
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 text-sm font-medium text-[#233B5E]">
                         {participant.name}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-slate-600">
                         {participant.email}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 w-48">
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full rounded-full h-2 bg-[#CCD8E6]">
                             <div
-                              className="bg-blue-500 h-2 rounded-full"
+                              className="h-2 rounded-full bg-emerald-500"
                               style={{
                                 width: `${participant.stats.avg_progress || 0}%`,
                               }}
                             ></div>
                           </div>
-                          <span className="text-sm text-gray-600 whitespace-nowrap">
+                          <span className="whitespace-nowrap text-sm text-slate-600">
                             {Math.round(participant.stats.avg_progress || 0)}%
                           </span>
                         </div>
@@ -358,7 +358,7 @@ export default function TrainerDashboard() {
                       <td className="px-6 py-4 text-sm">
                         <button
                           onClick={() => handleViewProfile(participant)}
-                          className="font-medium text-blue-500 hover:text-blue-700 hover:underline"
+                          className="font-medium text-[#233B5E] hover:text-[#1f344f] hover:underline"
                         >
                           Lihat Detail
                         </button>
@@ -369,7 +369,7 @@ export default function TrainerDashboard() {
                   <tr>
                     <td
                       colSpan="5"
-                      className="px-6 py-8 text-center text-gray-500"
+                      className="px-6 py-8 text-center text-slate-500"
                     >
                       Tidak ada narapidana untuk filter ini
                     </td>
@@ -383,10 +383,10 @@ export default function TrainerDashboard() {
 
       {showLogoutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+          <div className="relative w-full max-w-md rounded-3xl border border-red-100 bg-white/95 p-6 shadow-[0_24px_70px_rgba(185,28,28,0.18)] backdrop-blur-md">
             <button
               onClick={handleLogoutCancel}
-              className="absolute right-4 top-4 rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+              className="absolute right-4 top-4 rounded-full p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
               aria-label="Tutup popup keluar"
             >
               <FiX size={18} />
@@ -397,10 +397,10 @@ export default function TrainerDashboard() {
                 <FiAlertTriangle size={22} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-[#233B5E]">
                   Yakin anda mau keluar dari akun ini?
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
+                <p className="mt-2 text-sm leading-6 text-slate-600">
                   Anda akan keluar dari dashboard pelatih dan perlu login lagi untuk masuk kembali.
                 </p>
               </div>
@@ -409,13 +409,13 @@ export default function TrainerDashboard() {
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button
                 onClick={handleLogoutCancel}
-                className="rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+                className="rounded-full border border-[#CCD8E6] px-4 py-2 text-sm font-semibold text-[#233B5E] transition hover:bg-[#F7F6EE]"
               >
                 Batal
               </button>
               <button
                 onClick={handleLogoutConfirm}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
               >
                 <FiLogOut size={16} />
                 Keluar

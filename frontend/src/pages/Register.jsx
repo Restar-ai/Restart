@@ -92,27 +92,29 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 py-12 px-6">
-      <div className="w-full max-w-2xl mx-auto">
+    <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,_#CCD8E6_0%,_#F7F6EE_52%,_#233B5E_160%)] py-8 px-4 flex items-center justify-center sm:px-6">
+      <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-white/30 blur-3xl" />
+      <div className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-[#233B5E]/20 blur-3xl" />
+      <div className="relative z-10 w-full max-w-3xl mx-auto">
         {/* Logo / Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Restart</h1>
-          
+        <div className="text-center mb-5">
+          <h1 className="text-3xl font-bold tracking-tight text-[#233B5E] mb-1 sm:text-4xl">Restart</h1>
+          <p className="text-xs tracking-[0.24em] text-[#233B5E] sm:text-sm">CAREER PLATFORM</p>
+          <p className="mt-2 text-sm text-slate-600">Mulai perjalanan karier Anda dengan Restart.</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border border-slate-100">
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Daftar Akun</h2>
-          <p className="text-slate-500 mb-6 text-sm">Buat akun baru untuk memulai</p>
+        <div className="rounded-3xl border border-white/60 bg-white/88 p-5 shadow-[0_24px_70px_rgba(35,59,94,0.16)] backdrop-blur-md sm:p-6 md:p-8">
+          <h2 className="text-2xl font-bold text-[#233B5E] mb-2">Daftar Akun</h2>
+          <p className="text-slate-500 mb-5 text-sm">Buat akun baru untuk memulai</p>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+            <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
             </div>
           )}
 
-          {/* Scrollable Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-4">
             {/* Nama */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap *</label>
@@ -122,9 +124,9 @@ export default function Register() {
                 placeholder="John Doe"
                 value={form.name}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                   errors.name ? 'border-red-500' : 'border-slate-200'
-                } bg-slate-50`}
+                } bg-white`}
               />
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
             </div>
@@ -138,9 +140,9 @@ export default function Register() {
                 placeholder="contoh@email.com"
                 value={form.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                   errors.email ? 'border-red-500' : 'border-slate-200'
-                } bg-slate-50`}
+                } bg-white`}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
@@ -154,9 +156,9 @@ export default function Register() {
                 placeholder="16 digit NIK"
                 value={form.nik}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                   errors.nik ? 'border-red-500' : 'border-slate-200'
-                } bg-slate-50`}
+                } bg-white`}
               />
               {errors.nik && <p className="text-red-500 text-xs mt-1">{errors.nik}</p>}
             </div>
@@ -168,9 +170,9 @@ export default function Register() {
                 name="gender"
                 value={form.gender}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                   errors.gender ? 'border-red-500' : 'border-slate-200'
-                } bg-slate-50`}
+                } bg-white`}
               >
                 <option value="">Pilih jenis kelamin</option>
                 <option value="male">Laki-laki</option>
@@ -188,15 +190,15 @@ export default function Register() {
                 name="birth_date"
                 value={form.birth_date}
                 onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm text-slate-900 ${
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                   errors.birth_date ? 'border-red-500' : 'border-slate-200'
-                } bg-slate-50`}
+                } bg-white`}
               />
               {errors.birth_date && <p className="text-red-500 text-xs mt-1">{errors.birth_date}</p>}
             </div>
 
             {/* Alamat */}
-            <div>
+            <div className="md:col-span-2">
               <label className="block text-sm font-medium text-slate-700 mb-1">Alamat *</label>
               <textarea
                 name="address"
@@ -204,9 +206,9 @@ export default function Register() {
                 value={form.address}
                 onChange={handleChange}
                 rows="2"
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm resize-none text-slate-900 ${
+                className={`w-full rounded-xl border px-4 py-3 text-sm resize-none text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                   errors.address ? 'border-red-500' : 'border-slate-200'
-                } bg-slate-50`}
+                } bg-white`}
               />
               {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
             </div>
@@ -221,14 +223,14 @@ export default function Register() {
                   placeholder="••••••••"
                   value={form.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm pr-10 text-slate-900 ${
+                  className={`w-full rounded-xl border px-4 py-3 pr-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                     errors.password ? 'border-red-500' : 'border-slate-200'
-                  } bg-slate-50`}
+                  } bg-white`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-[#233B5E]"
                 >
                   {showPassword ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
                 </button>
@@ -246,38 +248,40 @@ export default function Register() {
                   placeholder="••••••••"
                   value={form.password_confirm}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 transition text-sm pr-10 text-slate-900 ${
+                  className={`w-full rounded-xl border px-4 py-3 pr-10 text-sm text-slate-900 transition placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#CCD8E6] ${
                     errors.password_confirm ? 'border-red-500' : 'border-slate-200'
-                  } bg-slate-50`}
+                  } bg-white`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-[#233B5E]"
                 >
                   {showConfirmPassword ? <AiOutlineEyeInvisible size={18} /> : <AiOutlineEye size={18} />}
                 </button>
               </div>
               {errors.password_confirm && <p className="text-red-500 text-xs mt-1">{errors.password_confirm}</p>}
             </div>
+
+            <div className="md:col-span-2">
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full rounded-xl bg-[#233B5E] py-3.5 font-semibold text-white transition hover:bg-[#1f344f] disabled:bg-slate-400"
+              >
+                {loading ? 'Sedang mendaftar...' : 'Daftar'}
+              </button>
+            </div>
+
+            <div className="md:col-span-2">
+              <p className="text-center text-slate-600 text-sm">
+                Sudah punya akun?{' '}
+                <Link to="/" className="font-semibold text-[#233B5E] hover:text-[#1f344f]">
+                  Login di sini
+                </Link>
+              </p>
+            </div>
           </form>
-
-          {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full mt-6 bg-slate-800 hover:bg-slate-900 disabled:bg-slate-400 text-white font-semibold py-3 rounded-lg transition duration-200"
-          >
-            {loading ? 'Sedang mendaftar...' : 'Daftar'}
-          </button>
-
-          {/* Login Link */}
-          <p className="text-center text-slate-600 mt-6 text-sm">
-            Sudah punya akun?{' '}
-            <Link to="/" className="text-slate-800 font-semibold hover:text-slate-900">
-              Login di sini
-            </Link>
-          </p>
         </div>
       </div>
     </div>
