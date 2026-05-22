@@ -10,6 +10,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [errors, setErrors] = useState({})
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   const [form, setForm] = useState({
     name: '',
@@ -82,8 +83,8 @@ export default function Register() {
         address: ''
       })
 
-      // Show success and redirect
-      navigate('/')
+      setErrors({})
+      setShowSuccessModal(true)
     } catch (error) {
       setError(error.message)
     } finally {
@@ -265,7 +266,7 @@ export default function Register() {
 
             <div className="md:col-span-2">
               <button
-                onClick={handleSubmit}
+                type="submit"
                 disabled={loading}
                 className="w-full rounded-xl bg-[#233B5E] py-3.5 font-semibold text-white transition hover:bg-[#1f344f] disabled:bg-slate-400"
               >
@@ -284,6 +285,38 @@ export default function Register() {
           </form>
         </div>
       </div>
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md rounded-3xl border border-[#CCD8E6] bg-white p-6 shadow-[0_24px_70px_rgba(35,59,94,0.18)]">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                ✓
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-[#233B5E]">
+                  Registrasi berhasil
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Akun kamu sudah berhasil dibuat. Silakan lanjut ke halaman login untuk masuk.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => {
+                  setShowSuccessModal(false)
+                  navigate('/')
+                }}
+                className="rounded-full bg-[#233B5E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1f344f]"
+              >
+                Ke Login
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
