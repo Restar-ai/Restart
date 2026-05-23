@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import AssessmentPage from "./pages/AssessmentPage";
 import AssessmentResultPage from "./pages/AssessmentResultPage";
 import ProfilePage from "./pages/ProfilePage";
+import CoursePage from "./pages/CoursePage";
 
 // Lazy load dashboard untuk avoid issues
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
@@ -163,6 +164,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/course/:courseId"
+            element={
+              <ProtectedRoute>
+                <CoursePage />
               </ProtectedRoute>
             }
           />

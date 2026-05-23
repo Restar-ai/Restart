@@ -403,7 +403,11 @@ export default function Dashboard() {
                           ✓ Selesai
                         </div>
                       ) : (
-                        <button className="w-full mt-3 text-white px-3 py-2 rounded text-xs font-medium transition-colors" style={{backgroundColor: '#233B5E'}}>
+                        <button
+                          onClick={() => navigate(`/course/${course.id}`)}
+                          className="w-full mt-3 text-white px-3 py-2 rounded text-xs font-medium transition-colors"
+                          style={{backgroundColor: '#233B5E'}}
+                        >
                           Lanjutkan
                         </button>
                       )}
