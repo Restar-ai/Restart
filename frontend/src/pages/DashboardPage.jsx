@@ -154,30 +154,31 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen" style={{backgroundColor: 'white'}}>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
+      <header className="sticky top-0 z-40 border-b" style={{backgroundColor: 'white', borderColor: '#CCD8E6'}}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl font-bold" style={{color: '#233B5E'}}>
                 Belajar
               </h1>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+              <p className="text-xs sm:text-sm mt-0.5" style={{color: '#7D8293'}}>
                 Restart Career Platform
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={() => navigate("/profile")}
-                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded font-medium text-sm transition-colors"
+                className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-sm text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                style={{backgroundColor: '#233B5E'}}
               >
                 <FiUser size={16} />
                 <span className="hidden sm:inline">Profile</span>
               </button>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-sm transition-colors"
+                className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-sm shadow-sm transition hover:-translate-y-0.5 hover:bg-red-50 hover:shadow-md border border-red-200 bg-white text-red-600"
               >
                 <FiLogOut size={16} />
                 <span className="hidden sm:inline">Logout</span>
@@ -190,10 +191,10 @@ export default function Dashboard() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {/* Welcome Section - Simplified */}
         <div className="mb-6">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
+          <h2 className="text-xl sm:text-2xl font-semibold" style={{color: '#233B5E'}}>
             Halo, {user.name}! 👋
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm mt-1" style={{color: '#7D8293'}}>
             Lanjutkan perjalanan belajarmu hari ini
           </p>
         </div>
@@ -254,7 +255,7 @@ export default function Dashboard() {
 
             <div className="bg-white rounded p-3 sm:p-4">
               <p className="text-sm font-semibold text-gray-900 mb-3">Rekomendasi Pekerjaan untuk Anda:</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2" style={{gridAutoFlow: 'column', gridTemplateRows: 'repeat(3, minmax(0, 1fr))'}}>
                 {assessmentResult.recommendedJobs && assessmentResult.recommendedJobs.map((job, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-sm text-gray-700 bg-blue-50 px-3 py-2 rounded">
                     <span className="text-blue-600 font-semibold">{idx + 1}.</span>
@@ -270,40 +271,44 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
           <button
             onClick={() => handleStatClick("enrolled")}
-            className="bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            className="rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            style={{backgroundColor: 'white', border: `1px solid #CCD8E6`}}
           >
-            <p className="text-xs text-gray-600 font-medium">Kursus Saya</p>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
+            <p className="text-xs font-medium" style={{color: '#7D8293'}}>Kursus Saya</p>
+            <p className="text-2xl sm:text-3xl font-bold mt-1" style={{color: '#233B5E'}}>
               {stats.totalEnrolled}
             </p>
           </button>
 
           <button
-            onClick={() => handleStatClick("enrolled")}
-            className="bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-300 rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            onClick={() => handleStatClick("completed")}
+            className="rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            style={{backgroundColor: 'white', border: `1px solid #CCD8E6`}}
           >
-            <p className="text-xs text-gray-600 font-medium">Selesai</p>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
+            <p className="text-xs font-medium" style={{color: '#7D8293'}}>Selesai</p>
+            <p className="text-2xl sm:text-3xl font-bold mt-1" style={{color: '#16A34A'}}>
               {stats.completed}
             </p>
           </button>
 
           <button
-            onClick={() => handleStatClick("enrolled")}
-            className="bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            onClick={() => handleStatClick("progress")}
+            className="rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            style={{backgroundColor: 'white', border: `1px solid #CCD8E6`}}
           >
-            <p className="text-xs text-gray-600 font-medium">Progress</p>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
+            <p className="text-xs font-medium" style={{color: '#7D8293'}}>Progress</p>
+            <p className="text-2xl sm:text-3xl font-bold mt-1" style={{color: '#233B5E'}}>
               {stats.avgProgress}%
             </p>
           </button>
 
           <button
             onClick={() => handleStatClick("available")}
-            className="bg-gray-50 hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            className="rounded-lg p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer"
+            style={{backgroundColor: 'white', border: `1px solid #CCD8E6`}}
           >
-            <p className="text-xs text-gray-600 font-medium">Tersedia</p>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
+            <p className="text-xs font-medium" style={{color: '#7D8293'}}>Tersedia</p>
+            <p className="text-2xl sm:text-3xl font-bold mt-1" style={{color: '#233B5E'}}>
               {availableCourses.length}
             </p>
           </button>
@@ -341,7 +346,8 @@ export default function Dashboard() {
                 <p className="text-gray-600 mb-3">Belum ada kursus yang diambil</p>
                 <button
                   onClick={() => setActiveTab("available")}
-                  className="px-4 py-2 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800 transition-colors"
+                  className="px-4 py-2 text-white rounded text-sm font-medium transition-colors"
+                  style={{backgroundColor: '#233B5E'}}
                 >
                   Cari Kursus
                 </button>
@@ -397,7 +403,7 @@ export default function Dashboard() {
                           ✓ Selesai
                         </div>
                       ) : (
-                        <button className="w-full mt-3 bg-gray-900 hover:bg-gray-800 text-white px-3 py-2 rounded text-xs font-medium transition-colors">
+                        <button className="w-full mt-3 text-white px-3 py-2 rounded text-xs font-medium transition-colors" style={{backgroundColor: '#233B5E'}}>
                           Lanjutkan
                         </button>
                       )}
@@ -458,7 +464,8 @@ export default function Dashboard() {
                         <button
                           onClick={() => handleEnrollCourse(course.id)}
                           disabled={enrollingCourseId === course.id}
-                          className="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-3 py-1.5 text-white rounded text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{backgroundColor: '#233B5E'}}
                         >
                           {enrollingCourseId === course.id ? "..." : "Daftar"}
                         </button>

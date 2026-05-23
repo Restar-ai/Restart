@@ -202,4 +202,104 @@ const updateAddress = async (req, res) => {
   }
 };
 
-export { register, login, updateAddress };
+const updateProfile = async (req, res) => {
+  try {
+    const { user_id, phone, education, address, password, photo } = req.body;
+
+    if (!user_id) {
+      return res.status(400).json({
+        message: "user_id harus diisi",
+      });
+    }
+
+    let updateQuery = "UPDATE users SET ";
+    let updateParams = [];
+    const updates = [];
+
+    if (phone !== undefined && phone !== null) {
+      updates.push("phone = ?");
+      updateParams.push(phone);
+    }
+
+    if (education !== undefined && education !== null) {
+      updates.push("education = ?");
+      updateParams.push(education);
+    }
+
+    if (address !== undefined && address !== null) {
+      updates.push("address = ?");
+      updateParams.push(address);
+    }
+
+    if (photo !== undefined && photo !== null) {
+      updates.push("photo = ?");
+      updateParams.push(photo);
+    }
+
+    if (password) {
+      if (password.length < 6) {
+        return res.status(400).json({
+          message: "Password minimal 6 karakter",
+        });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updates.push("password = ?");
+      updateParams.push(hashedPassword);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({
+        message: "Tidak ada data yang diupdate",
+      });
+    }
+
+    updateQuery += updates.join(", ") + " WHERE id = ?";
+    updateParams.push(user_id);
+
+    getConnection().query(updateQuery, updateParams, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Gagal update profil",
+          error: err.message,
+        });
+      }
+
+      // Return updated user data
+      getConnection().query(
+        "SELECT id, name, email, nik, gender, birth_date, address, phone, education, photo, role, assessment_completed FROM users WHERE id = ?",
+        [user_id],
+        (err, users) => {
+          if (err || !users || users.length === 0) {
+            return res.status(500).json({
+              message: "Gagal mengambil data profil",
+            });
+          }
+
+          res.json({
+            message: "Profil berhasil diperbarui",
+            user: {
+              id: users[0].id,
+              name: users[0].name,
+              email: users[0].email,
+              nik: users[0].nik,
+              gender: users[0].gender,
+              birth_date: users[0].birth_date,
+              address: users[0].address,
+              phone: users[0].phone,
+              education: users[0].education,
+              photo: users[0].photo,
+              role: users[0].role,
+              assessment_completed: users[0].assessment_completed,
+            },
+          });
+        },
+      );
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export { register, login, updateAddress, updateProfile };

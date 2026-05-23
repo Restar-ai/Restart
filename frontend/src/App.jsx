@@ -6,10 +6,9 @@ import AssessmentPage from "./pages/AssessmentPage";
 import AssessmentResultPage from "./pages/AssessmentResultPage";
 import ProfilePage from "./pages/ProfilePage";
 
-// Lazy load dashboards dan pages untuk avoid issues
+// Lazy load dashboard untuk avoid issues
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const TrainerDashboard = lazy(() => import("./pages/TrainerDashboard"));
-const ParticipantProfile = lazy(() => import("./pages/ParticipantProfile"));
 
 // Loading fallback
 function LoadingPage() {
@@ -102,15 +101,34 @@ function AssessmentRoute({ children }) {
   return children;
 }
 
-// Role-based dashboard component
-function Dashboard() {
+// Component untuk dashboard routing berdasarkan role
+function DashboardRouter() {
+  const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  if (user.role === "trainer") {
-    return <TrainerDashboard />;
-  } else {
-    return <DashboardPage />;
+  if (!token) {
+    return <Navigate to="/" replace />;
   }
+
+  // Trainer → TrainerDashboard
+  if (user.role === "trainer") {
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <TrainerDashboard />
+      </Suspense>
+    );
+  }
+
+  // Participant (default) → DashboardPage
+  if (user.role === "participant" && !user.assessment_completed) {
+    return <Navigate to="/assessment" replace />;
+  }
+
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <DashboardPage />
+    </Suspense>
+  );
 }
 
 export default function App() {
@@ -138,29 +156,13 @@ export default function App() {
           />
           <Route
             path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Suspense fallback={<LoadingPage />}>
-                  <Dashboard />
-                </Suspense>
-              </ProtectedRoute>
-            }
+            element={<DashboardRouter />}
           />
           <Route
             path="/profile"
             element={
               <ProtectedRoute>
                 <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/participant/:id"
-            element={
-              <ProtectedRoute>
-                <Suspense fallback={<LoadingPage />}>
-                  <ParticipantProfile />
-                </Suspense>
               </ProtectedRoute>
             }
           />

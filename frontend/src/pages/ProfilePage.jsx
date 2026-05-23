@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiBook, FiCheckCircle, FiLogOut, FiShield, FiAlertTriangle, FiX } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiMail,
+  FiCalendar,
+  FiMapPin,
+  FiCheckCircle,
+  FiBook,
+  FiPhone,
+  FiLock,
+  FiCamera,
+  FiEdit2,
+  FiX,
+} from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
 
 export default function ProfilePage() {
@@ -9,16 +21,34 @@ export default function ProfilePage() {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [completedCourses, setCompletedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [editedAddress, setEditedAddress] = useState("");
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editProfile, setEditProfile] = useState({
+    phone: "",
+    education: "",
+    address: "",
+    password: "",
+    confirmPassword: "",
+    photo: null,
+  });
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
-      setEditedAddress(parsedUser.address || "");
+      setEditProfile({
+        phone: parsedUser.phone || "",
+        education: parsedUser.education || "",
+        address: parsedUser.address || "",
+        password: "",
+        confirmPassword: "",
+        photo: null,
+      });
+      if (parsedUser.photo) {
+        setPhotoPreview(parsedUser.photo);
+      }
       loadProfileData(parsedUser.id);
     }
   }, []);
@@ -26,10 +56,15 @@ export default function ProfilePage() {
   const loadProfileData = async (userId) => {
     try {
       setLoading(true);
-      const userCourses = await courseApi.getUserCourses(userId);
-      const normalizedCourses = userCourses || [];
-      setEnrolledCourses(normalizedCourses);
-      setCompletedCourses(normalizedCourses.filter((course) => course.completed_at));
+      // Hanya load courses untuk participant
+      if (user?.role !== "trainer") {
+        const userCourses = await courseApi.getUserCourses(userId);
+        setEnrolledCourses(userCourses);
+
+        // Filter completed courses
+        const completed = userCourses.filter((course) => course.completed_at);
+        setCompletedCourses(completed);
+      }
     } catch (error) {
       console.error("Error loading profile data:", error);
     } finally {
@@ -59,205 +94,392 @@ export default function ProfilePage() {
     }
   };
 
-  const handleLogout = () => {
-    setShowLogoutModal(true);
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result;
+        setPhotoPreview(base64String);
+        setEditProfile({ ...editProfile, photo: base64String });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const handleLogoutCancel = () => {
-    setShowLogoutModal(false);
-  };
+  const handleSaveProfile = async () => {
+    if (editProfile.password !== editProfile.confirmPassword) {
+      setPasswordError("Password tidak cocok!");
+      return;
+    }
 
-  const handleLogoutConfirm = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setShowLogoutModal(false);
-    navigate("/");
+    try {
+      const updateData = {
+        user_id: user.id,
+        phone: editProfile.phone,
+        education: editProfile.education,
+        address: editProfile.address,
+      };
+
+      if (editProfile.password) {
+        updateData.password = editProfile.password;
+      }
+
+      if (editProfile.photo && editProfile.photo.startsWith("data:")) {
+        updateData.photo = editProfile.photo;
+      }
+
+      const response = await fetch("http://localhost:5000/api/auth/update-profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (response.ok) {
+        const updatedUser = {
+          ...user,
+          phone: editProfile.phone,
+          education: editProfile.education,
+          address: editProfile.address,
+        };
+        if (photoPreview) {
+          updatedUser.photo = photoPreview;
+        }
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setIsEditingProfile(false);
+        setPasswordError("");
+        setPhotoPreview(null);
+        setEditProfile({ ...editProfile, password: "", confirmPassword: "" });
+        alert("Profil berhasil diperbarui!");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setPasswordError("Terjadi kesalahan saat update profil");
+    }
   };
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[linear-gradient(135deg,_#CCD8E6_0%,_#F7F6EE_52%,_#233B5E_160%)] p-4 sm:p-6">
-        <div className="mx-auto max-w-5xl">
-          <div className="animate-pulse space-y-4">
-            <div className="h-10 w-1/4 rounded bg-white/30" />
-            <div className="h-64 rounded-3xl bg-white/30" />
-            <div className="h-56 rounded-3xl bg-white/30" />
+      <main className="min-h-screen bg-white p-4 sm:p-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
           </div>
         </div>
       </main>
     );
   }
 
-  const isTrainer = user?.role === "trainer";
-
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,_#F7F6EE_0%,_#FFFFFF_36%,_#F7F6EE_100%)]">
-      <header className="sticky top-0 z-40 border-b border-white/60 bg-white/78 backdrop-blur-xl shadow-sm">
-        <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 sm:py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="inline-flex items-center gap-2 rounded-full border border-[#CCD8E6] bg-white px-3 py-2 text-sm font-semibold text-[#233B5E] shadow-sm transition hover:-translate-y-0.5 hover:border-[#233B5E] hover:shadow-md"
-              >
-                <FiArrowLeft size={16} />
-                <span className="hidden sm:inline">Kembali</span>
-              </button>
-              <div>
-                <h1 className="text-2xl font-bold text-[#233B5E] sm:text-3xl">
-                  {isTrainer ? "Profil Pelatih" : "Profile Saya"}
-                </h1>
-                <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
-                  Informasi akun
-                </p>
-              </div>
-            </div>
-
+    <main className="min-h-screen" style={{backgroundColor: 'white'}}>
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b" style={{backgroundColor: 'white', borderColor: '#CCD8E6'}}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center gap-3">
             <button
-              onClick={handleLogout}
-              type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-[#CCD8E6] bg-white px-3 py-2 text-sm font-semibold text-[#233B5E] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#F7F6EE] hover:shadow-md"
+              onClick={() => navigate("/dashboard")}
+              className="p-2 hover:bg-gray-100 rounded transition-colors"
             >
-              <FiLogOut size={16} />
-              <span className="hidden sm:inline">Keluar</span>
+              <FiArrowLeft size={24} />
             </button>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold" style={{color: '#233B5E'}}>
+                Profile Saya
+              </h1>
+              <p className="text-xs sm:text-sm mt-0.5" style={{color: '#7D8293'}}>
+                Informasi akun dan pembelajaran
+              </p>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {user && (
           <>
-            <section className="overflow-hidden rounded-3xl border border-[#CCD8E6] bg-[linear-gradient(135deg,_#CCD8E6_0%,_#F7F6EE_55%,_#233B5E_145%)] text-[#233B5E] shadow-[0_24px_70px_rgba(35,59,94,0.16)]">
-              <div className="p-6 sm:p-8">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-start gap-4 sm:gap-5">
-                    <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-3xl border border-white/70 bg-white/60 text-3xl font-bold text-[#233B5E] shadow-lg backdrop-blur sm:h-24 sm:w-24 sm:text-4xl">
-                      {user.name?.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#233B5E]">
-                        <FiShield size={14} />
-                        {isTrainer ? "Pelatih" : "Peserta"}
-                      </div>
-                      <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#233B5E] sm:text-4xl">
-                        {user.name}
-                      </h2>
-                      <p className="mt-2 text-sm text-slate-600 sm:text-base">
-                        {user.email}
-                      </p>
-                    </div>
+            {/* Profile Card */}
+            <div className="bg-white rounded-lg border p-6 sm:p-8 mb-6" style={{borderColor: '#CCD8E6'}}>
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start gap-4 sm:gap-6">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden" style={{backgroundColor: '#233B5E'}}>
+                    {user.photo ? (
+                      <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-3xl sm:text-4xl font-bold text-white">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold" style={{color: '#233B5E'}}>
+                      {user.name}
+                    </h2>
+                    <p className="text-sm mt-1 capitalize" style={{color: '#7D8293'}}>
+                      {user.role || "Peserta"}
+                    </p>
+                  </div>
+                </div>
+                {!isEditingProfile && (
+                  <button
+                    onClick={() => setIsEditingProfile(true)}
+                    className="p-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2"
+                    style={{backgroundColor: '#233B5E', color: 'white'}}
+                  >
+                    <FiEdit2 size={16} />
+                    <span className="hidden sm:inline">Edit</span>
+                  </button>
+                )}
+              </div>
+
+              {/* User Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-6" style={{borderColor: '#CCD8E6'}}>
+                <div className="flex items-start gap-3">
+                  <FiMail className="mt-1 flex-shrink-0" size={20} style={{color: '#233B5E'}} />
+                  <div>
+                    <p className="text-xs font-medium" style={{color: '#7D8293'}}>Email</p>
+                    <p className="text-sm break-all" style={{color: '#233B5E'}}>
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <FiPhone className="mt-1 flex-shrink-0" size={20} style={{color: '#233B5E'}} />
+                  <div>
+                    <p className="text-xs font-medium" style={{color: '#7D8293'}}>Nomor Telepon</p>
+                    <p className="text-sm" style={{color: '#233B5E'}}>
+                      {user.phone || "-"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <FiCalendar className="mt-1 flex-shrink-0" size={20} style={{color: '#233B5E'}} />
+                  <div>
+                    <p className="text-xs font-medium" style={{color: '#7D8293'}}>Tanggal Lahir</p>
+                    <p className="text-sm" style={{color: '#233B5E'}}>
+                      {user.birth_date ? new Date(user.birth_date).toLocaleDateString("id-ID") : "-"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <FiBook className="mt-1 flex-shrink-0" size={20} style={{color: '#233B5E'}} />
+                  <div>
+                    <p className="text-xs font-medium" style={{color: '#7D8293'}}>Pendidikan Terakhir</p>
+                    <p className="text-sm" style={{color: '#233B5E'}}>
+                      {user.education || "-"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 sm:col-span-2">
+                  <FiMapPin className="mt-1 flex-shrink-0" size={20} style={{color: '#233B5E'}} />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium" style={{color: '#7D8293'}}>Alamat</p>
+                    <p className="text-sm" style={{color: '#233B5E'}}>
+                      {user.address || "-"}
+                    </p>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
 
-            <section className="rounded-3xl border border-[#CCD8E6] bg-white/90 p-5 shadow-[0_18px_50px_rgba(35,59,94,0.08)] sm:p-8">
-              <div className="mb-5 flex items-center justify-between gap-3">
-                <div>
-                  <h3 className="text-xl font-bold text-[#233B5E]">Data Profil</h3>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Ringkasan identitas dan kontak.
-                  </p>
-                </div>
-                <div className="rounded-full bg-[#CCD8E6] px-3 py-1 text-xs font-semibold text-[#233B5E]">
-                  {isTrainer ? "Pelatih" : "Peserta"}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="rounded-2xl border border-[#CCD8E6] bg-[#F7F6EE] p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Email
-                  </p>
-                  <p className="mt-2 break-all text-sm font-semibold text-[#233B5E]">
-                    {user.email}
-                  </p>
+            {/* Edit Profile Modal */}
+            {isEditingProfile && (
+              <div className="bg-white rounded-lg border p-6 sm:p-8 mb-6" style={{borderColor: '#CCD8E6'}}>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-bold" style={{color: '#233B5E'}}>Edit Profil</h3>
+                  <button
+                    onClick={() => {
+                      setIsEditingProfile(false);
+                      setPasswordError("");
+                      setPhotoPreview(null);
+                    }}
+                    className="p-1"
+                  >
+                    <FiX size={20} />
+                  </button>
                 </div>
 
-                <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Tanggal Lahir
-                  </p>
-                  <p className="mt-2 text-sm font-semibold text-amber-700">
-                    {user.birth_date ? new Date(user.birth_date).toLocaleDateString("id-ID") : "-"}
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Alamat
-                  </p>
-                  {isEditingAddress ? (
-                    <div className="mt-2 space-y-3">
-                      <input
-                        type="text"
-                        value={editedAddress}
-                        onChange={(e) => setEditedAddress(e.target.value)}
-                        className="w-full rounded-xl border border-[#CCD8E6] bg-white px-3 py-2 text-sm outline-none transition focus:border-[#233B5E] focus:ring-4 focus:ring-[#CCD8E6]"
-                        placeholder="Masukkan alamat"
-                        autoFocus
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleSaveAddress}
-                          className="rounded-xl bg-[#233B5E] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#1f344f]"
-                        >
-                          Simpan
-                        </button>
-                        <button
-                          onClick={() => {
-                            setEditedAddress(user.address || "");
-                            setIsEditingAddress(false);
-                          }}
-                          className="rounded-xl border border-[#CCD8E6] bg-white px-3 py-2 text-xs font-semibold text-[#233B5E] transition hover:bg-[#F7F6EE]"
-                        >
-                          Batal
-                        </button>
+                <div className="space-y-4">
+                  {/* Photo Upload */}
+                  <div>
+                    <label className="block text-sm font-medium mb-3" style={{color: '#233B5E'}}>
+                      <FiCamera size={16} className="inline mr-2" />
+                      Upload Foto Profil
+                    </label>
+                    <div className="flex gap-4 items-start">
+                      <div className="w-20 h-20 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden" style={{backgroundColor: '#233B5E'}}>
+                        {photoPreview ? (
+                          <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                        ) : user.photo ? (
+                          <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-2xl font-bold text-white">
+                            {user.name?.charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoChange}
+                          className="w-full px-4 py-2 border rounded-lg text-sm"
+                        style={{borderColor: '#CCD8E6', color: '#233B5E'}}
+                        />
+                        <p className="text-xs mt-2" style={{color: '#7D8293'}}>
+                          Format: JPG, PNG (Max 5MB)
+                        </p>
                       </div>
                     </div>
-                  ) : (
-                    <div className="mt-2">
-                      <p className="text-sm font-semibold text-emerald-700">
-                        {user.address || "-"}
-                      </p>
-                      <button
-                        onClick={() => setIsEditingAddress(true)}
-                        className="mt-2 text-xs font-semibold text-[#233B5E] transition hover:text-[#1f344f]"
-                      >
-                        Edit Alamat
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  </div>
 
-                <div className="rounded-2xl border border-[#CCD8E6] bg-white p-4 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Jenis Kelamin
-                  </p>
-                  <p className="mt-2 text-sm font-semibold capitalize text-[#233B5E]">
-                    {user.gender || "-"}
-                  </p>
+                  <div className="border-t pt-4" style={{borderColor: '#CCD8E6'}}></div>
+
+                  {/* Nomor Telepon */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{color: '#233B5E'}}>
+                      Nomor Telepon
+                    </label>
+                    <input
+                      type="tel"
+                      value={editProfile.phone}
+                      onChange={(e) => setEditProfile({ ...editProfile, phone: e.target.value })}
+                      className="w-full px-4 py-2 border rounded-lg text-sm"
+                      style={{borderColor: '#CCD8E6', color: '#233B5E'}}
+                      placeholder="Contoh: 08123456789"
+                    />
+                  </div>
+
+                  {/* Pendidikan Terakhir */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{color: '#233B5E'}}>
+                      Pendidikan Terakhir
+                    </label>
+                    <select
+                      value={editProfile.education}
+                      onChange={(e) => setEditProfile({ ...editProfile, education: e.target.value })}
+                      className="w-full px-4 py-2 border rounded-lg text-sm"
+                      style={{borderColor: '#CCD8E6', color: '#233B5E'}}
+                    >
+                      <option value="">- Pilih Pendidikan -</option>
+                      <option value="SD">SD</option>
+                      <option value="SMP">SMP</option>
+                      <option value="SMA">SMA</option>
+                      <option value="Diploma">Diploma</option>
+                      <option value="Sarjana">Sarjana</option>
+                    </select>
+                  </div>
+
+                  {/* Alamat */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{color: '#233B5E'}}>
+                      Alamat
+                    </label>
+                    <input
+                      type="text"
+                      value={editProfile.address}
+                      onChange={(e) => setEditProfile({ ...editProfile, address: e.target.value })}
+                      className="w-full px-4 py-2 border rounded-lg text-sm"
+                      style={{borderColor: '#CCD8E6', color: '#233B5E'}}
+                      placeholder="Masukkan alamat lengkap"
+                    />
+                  </div>
+
+                  {/* Password Section */}
+                  <div className="border-t pt-4" style={{borderColor: '#CCD8E6'}}>
+                    <h4 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{color: '#233B5E'}}>
+                      <FiLock size={16} />
+                      Ubah Password (Opsional)
+                    </h4>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{color: '#233B5E'}}>
+                        Password Baru
+                      </label>
+                      <input
+                        type="password"
+                        value={editProfile.password}
+                        onChange={(e) => {
+                          setEditProfile({ ...editProfile, password: e.target.value });
+                          setPasswordError("");
+                        }}
+                        className="w-full px-4 py-2 border rounded-lg text-sm"
+                        style={{borderColor: '#CCD8E6', color: '#233B5E'}}
+                        placeholder="Kosongkan jika tidak ingin mengubah"
+                      />
+                    </div>
+
+                    <div className="mt-3">
+                      <label className="block text-sm font-medium mb-2" style={{color: '#233B5E'}}>
+                        Konfirmasi Password
+                      </label>
+                      <input
+                        type="password"
+                        value={editProfile.confirmPassword}
+                        onChange={(e) => {
+                          setEditProfile({ ...editProfile, confirmPassword: e.target.value });
+                          setPasswordError("");
+                        }}
+                        className="w-full px-4 py-2 border rounded-lg text-sm"
+                        style={{borderColor: '#CCD8E6', color: '#233B5E'}}
+                        placeholder="Ulangi password baru"
+                      />
+                    </div>
+
+                    {passwordError && (
+                      <p className="text-sm text-red-600 mt-2">{passwordError}</p>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      onClick={handleSaveProfile}
+                      className="flex-1 px-4 py-2 text-white rounded-lg font-medium text-sm transition"
+                      style={{backgroundColor: '#233B5E'}}
+                    >
+                      Simpan Perubahan
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsEditingProfile(false);
+                        setPasswordError("");
+                        setPhotoPreview(null);
+                      }}
+                      className="flex-1 px-4 py-2 rounded-lg font-medium text-sm transition border"
+                      style={{borderColor: '#CCD8E6', color: '#233B5E'}}
+                    >
+                      Batal
+                    </button>
+                  </div>
                 </div>
               </div>
-            </section>
-
-            {!isTrainer && (
-              <div className="rounded-3xl border border-[#CCD8E6] bg-white/90 p-5 shadow-[0_18px_50px_rgba(35,59,94,0.08)] sm:p-8">
-                <div className="mb-6 flex items-center gap-3">
-                  <FiCheckCircle className="text-emerald-600" size={24} />
-                  <h3 className="text-xl font-bold text-[#233B5E] sm:text-2xl">
+            )}
+            {user?.role !== "trainer" && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <FiCheckCircle className="text-green-600" size={24} />
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
                     Kursus Selesai
                   </h3>
-                  <span className="ml-auto rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
+                  <span className="ml-auto bg-green-100 text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">
                     {completedCourses.length}
                   </span>
                 </div>
 
                 {completedCourses.length === 0 ? (
-                  <div className="rounded-2xl border border-dashed border-[#CCD8E6] bg-[#F7F6EE] py-12 text-center">
-                    <FiBook className="mx-auto mb-3 text-[#233B5E]/40" size={32} />
-                    <p className="text-[#233B5E]">
+                  <div className="text-center py-12">
+                    <FiBook className="mx-auto text-gray-400 mb-3" size={32} />
+                    <p className="text-gray-600">
                       Belum ada kursus yang diselesaikan
                     </p>
                   </div>
@@ -266,24 +488,27 @@ export default function ProfilePage() {
                     {completedCourses.map((course) => (
                       <div
                         key={course.id}
-                        className="flex items-start gap-4 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 transition-shadow hover:shadow-sm"
+                        className="flex items-start gap-4 p-4 bg-green-50 border border-green-200 rounded-lg hover:shadow-sm transition-shadow"
                       >
-                        <div className="mt-1 flex-shrink-0 text-emerald-600">
+                        <div className="text-green-600 mt-1 flex-shrink-0">
                           <FiCheckCircle size={24} />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h4 className="break-words font-semibold text-[#233B5E]">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-gray-900 break-words">
                             {course.title}
                           </h4>
-                          <p className="mt-1 text-xs text-slate-600">
+                          <p className="text-xs text-gray-600 mt-1">
                             Instruktur: {course.instructor}
                           </p>
-                          <p className="text-xs text-slate-600">
+                          <p className="text-xs text-gray-600">
                             Kategori: {course.category}
                           </p>
                           {course.completed_at && (
-                            <p className="mt-2 text-xs font-medium text-emerald-700">
-                              Selesai: {new Date(course.completed_at).toLocaleDateString("id-ID")}
+                            <p className="text-xs text-green-700 font-medium mt-2">
+                              Selesai:{" "}
+                              {new Date(course.completed_at).toLocaleDateString(
+                                "id-ID"
+                              )}
                             </p>
                           )}
                         </div>
@@ -292,75 +517,42 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                <div className="mt-6 grid grid-cols-1 gap-3 border-t border-[#CCD8E6] pt-6 sm:grid-cols-3">
-                  <div className="rounded-2xl bg-[#F7F6EE] p-4 text-center shadow-sm">
-                    <p className="text-2xl font-bold text-[#233B5E] sm:text-3xl">
-                      {enrolledCourses.length}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-600">Total Kursus</p>
-                  </div>
-                  <div className="rounded-2xl bg-[#CCD8E6] p-4 text-center shadow-sm">
-                    <p className="text-2xl font-bold text-[#233B5E] sm:text-3xl">
-                      {completedCourses.length}
-                    </p>
-                    <p className="mt-1 text-xs text-[#233B5E]">Selesai</p>
-                  </div>
-                  <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4 text-center shadow-sm">
-                    <p className="text-2xl font-bold text-amber-700 sm:text-3xl">
-                      {enrolledCourses.length - completedCourses.length}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-600">Sedang Belajar</p>
+                {/* Summary */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                        {enrolledCourses.length}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">Total Kursus</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                        {completedCourses.length}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">Selesai</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-700">
+                        {enrolledCourses.length - completedCourses.length}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">Sedang Belajar</p>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
+
+            {/* Back Button */}
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="w-full mt-6 px-4 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded font-medium transition-colors"
+            >
+              Kembali ke Dashboard
+            </button>
           </>
         )}
       </div>
-
-      {showLogoutModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="relative w-full max-w-md rounded-3xl border border-[#CCD8E6] bg-white/95 p-6 shadow-[0_24px_70px_rgba(35,59,94,0.18)] backdrop-blur-md">
-            <button
-              onClick={handleLogoutCancel}
-              className="absolute right-4 top-4 rounded-full p-2 text-slate-400 transition hover:bg-[#F7F6EE] hover:text-[#233B5E]"
-              aria-label="Tutup popup keluar"
-            >
-              <FiX size={18} />
-            </button>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-[#CCD8E6] text-[#233B5E]">
-                <FiAlertTriangle size={22} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-[#233B5E]">
-                  Yakin anda mau keluar dari akun ini?
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Anda akan keluar dari halaman profil dan perlu login lagi untuk masuk kembali.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button
-                onClick={handleLogoutCancel}
-                className="rounded-full border border-[#CCD8E6] px-4 py-2 text-sm font-semibold text-[#233B5E] transition hover:bg-[#F7F6EE]"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleLogoutConfirm}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#233B5E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1f344f]"
-              >
-                <FiLogOut size={16} />
-                Keluar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </main>
   );
 }
