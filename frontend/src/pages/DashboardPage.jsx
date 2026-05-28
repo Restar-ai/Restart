@@ -16,6 +16,7 @@ import {
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
 import * as assessmentApi from "../api/assessmentApi";
+import * as authApi from "../api/authApi";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -84,10 +85,18 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      if (user?.id) {
+        await authApi.logoutUser(user.id);
+      }
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/");
+    }
   };
 
   const handleEnrollCourse = async (courseId) => {

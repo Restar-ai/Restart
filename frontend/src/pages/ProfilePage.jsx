@@ -14,6 +14,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
+import * as authApi from "../api/authApi";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -37,7 +38,6 @@ export default function ProfilePage() {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
       setEditProfile({
         phone: parsedUser.phone || "",
         education: parsedUser.education || "",
@@ -48,6 +48,8 @@ export default function ProfilePage() {
       });
       if (parsedUser.photo) {
         setPhotoPreview(parsedUser.photo);
+      } else {
+        setPhotoPreview(null);
       }
       loadProfileData(parsedUser.id);
     }
@@ -56,8 +58,32 @@ export default function ProfilePage() {
   const loadProfileData = async (userId) => {
     try {
       setLoading(true);
-      // Hanya load courses untuk participant
-      if (user?.role !== "trainer") {
+      
+      // Fetch profile data from API
+      const profileRes = await authApi.getProfile(userId);
+      const updatedUser = profileRes.user;
+      
+      // Set user state dengan data fresh dari database
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      
+      // Update editProfile dengan data terbaru dari database
+      setEditProfile({
+        phone: updatedUser.phone || "",
+        education: updatedUser.education || "",
+        address: updatedUser.address || "",
+        password: "",
+        confirmPassword: "",
+        photo: null,
+      });
+      
+      // Update photo preview
+      if (updatedUser.photo) {
+        setPhotoPreview(updatedUser.photo);
+      }
+      
+      // Load courses untuk participant
+      if (updatedUser.role !== "trainer") {
         const userCourses = await courseApi.getUserCourses(userId);
         setEnrolledCourses(userCourses);
 
@@ -139,20 +165,24 @@ export default function ProfilePage() {
       });
 
       if (response.ok) {
+        const updatedUserData = response.json ? response.json() : null;
         const updatedUser = {
           ...user,
           phone: editProfile.phone,
           education: editProfile.education,
           address: editProfile.address,
         };
-        if (photoPreview) {
-          updatedUser.photo = photoPreview;
+        
+        // Jika ada photo dari form, simpan ke user object
+        if (editProfile.photo && editProfile.photo.startsWith("data:")) {
+          updatedUser.photo = editProfile.photo;
+          setPhotoPreview(editProfile.photo);
         }
+        
         setUser(updatedUser);
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setIsEditingProfile(false);
         setPasswordError("");
-        setPhotoPreview(null);
         setEditProfile({ ...editProfile, password: "", confirmPassword: "" });
         alert("Profil berhasil diperbarui!");
       }

@@ -8,6 +8,7 @@ import {
   FiClock,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
+import * as authApi from "../api/authApi";
 
 export default function ParticipantProfile() {
   const navigate = useNavigate();
@@ -37,10 +38,20 @@ export default function ParticipantProfile() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user?.id) {
+        await authApi.logoutUser(user.id);
+      }
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("viewingParticipant");
+      navigate("/");
+    }
   };
 
   const handleBack = () => {

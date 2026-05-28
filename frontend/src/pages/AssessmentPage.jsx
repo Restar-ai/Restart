@@ -130,13 +130,14 @@ export default function AssessmentPage() {
           {question && (
             <div className="mb-6">
               <span className="inline-block px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-medium mb-4">
+                {question.label && <span className="font-semibold">{question.label} • </span>}
                 {question.category === 'physical'
                   ? 'Kategori Fisik & Motorik'
                   : question.category === 'communication'
                   ? 'Kategori Komunikasi & Sosial'
                   : question.category === 'problem_solving'
-                  ? 'Kategori Pemecahan Masalah'
-                  : 'Kategori Kepribadian'}
+                  ? 'Kategori Pemecahan Masalah & Teknis'
+                  : 'Kategori Tipe Kepribadian'}
               </span>
             </div>
           )}

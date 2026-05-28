@@ -3,7 +3,10 @@ const BASE_URL = 'http://localhost:5000/api'
 async function request(method, path, body) {
   const options = {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      "Cache-Control": "no-cache, no-store, must-revalidate"
+    },
   };
 
   if (body !== undefined) {

@@ -33,8 +33,9 @@ export default function CoursePage() {
   const loadCourseData = async (userId) => {
     try {
       setLoading(true);
-      const courseDetail = await courseApi.getCourseById(courseId);
-      setCourse(courseDetail);
+      const courseRes = await courseApi.getCourseById(courseId);
+      // Response sekarang berstruktur: { message, course }
+      setCourse(courseRes.course || courseRes);
 
       // Load user's enrolled courses to get progress
       const userCourses = await courseApi.getUserCourses(userId);

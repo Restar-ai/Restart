@@ -2,21 +2,22 @@ import { getConnection } from "../services/db.js"
 
 // Assessment questions data
 const ASSESSMENT_QUESTIONS = [
-  { id: 1, category: "physical", question: "Saya mampu melakukan pekerjaan fisik yang menguras tenaga (seperti berdiri lama atau mengangkat barang) berjam-jam tanpa cepat lelah." },
-  { id: 2, category: "physical", question: "Saya kuat mengangkat, mendorong, atau menarik beban yang berat secara berulang-ulang." },
-  { id: 3, category: "physical", question: "Tangan saya sangat cekatan dan terampil saat merakit, menyusun, atau memperbaiki benda-benda." },
-  { id: 4, category: "physical", question: "Saya sangat mudah menghafal jalan, tidak mudah nyasar, dan tahu arah meskipun berada di tempat baru." },
-  { id: 5, category: "communication", question: "Saya sabar mendengarkan orang lain berbicara sampai selesai tanpa memotong, dan mudah memahami maksud mereka." },
-  { id: 6, category: "communication", question: "Saya bisa berbicara dengan jelas, percaya diri, dan mudah dipahami oleh orang yang baru saya kenal." },
-  { id: 7, category: "communication", question: "Saya senang membantu orang lain dan selalu berusaha membuat pelanggan merasa puas dan dihargai." },
-  { id: 8, category: "communication", question: "Saya lebih suka bekerja bersama-sama dalam sebuah tim dan mudah menyesuaikan diri dengan cara kerja orang lain." },
-  { id: 9, category: "problem_solving", question: "Jika ada mesin, kendaraan, atau alat yang tiba-tiba rusak, saya suka mencari tahu apa penyebabnya." },
-  { id: 10, category: "problem_solving", question: "Saya selalu berusaha datang tepat waktu dan bisa menyelesaikan target kerja sebelum batas waktunya habis." },
-  { id: 11, category: "personality", question: "Saya lebih suka pekerjaan yang menggunakan tangan, mesin, atau bekerja di luar ruangan daripada duduk di belakang meja." },
-  { id: 12, category: "personality", question: "Saya suka membuat desain, memikirkan ide-ide kreatif, atau melakukan pekerjaan yang tidak terlalu terikat aturan baku." },
-  { id: 13, category: "personality", question: "Saya sangat menyukai pekerjaan yang teratur, berulang-ulang, dan memiliki aturan yang jelas (seperti menyusun barang atau memasukkan data)." },
-  { id: 14, category: "personality", question: "Saya merasa sangat puas jika pekerjaan saya bisa mengajari, menyembuhkan, atau berdampak langsung pada hidup orang lain." },
-  { id: 15, category: "personality", question: "Saya berani mengambil risiko, suka memulai proyek baru, dan tidak malu untuk memimpin kelompok." }
+  { id: 1, category: "physical", label: "Stamina", question: "Saya mampu melakukan pekerjaan fisik yang menguras tenaga (seperti berdiri lama atau mengangkat barang) berjam-jam tanpa cepat lelah." },
+  { id: 2, category: "physical", label: "Static Strength", question: "Saya kuat mengangkat, mendorong, atau menarik beban yang berat secara berulang-ulang." },
+  { id: 3, category: "physical", label: "Manual Dexterity", question: "Tangan saya sangat cekatan dan terampil saat merakit, menyusun, atau memperbaiki benda-benda." },
+  { id: 4, category: "physical", label: "Spatial Orientation", question: "Saya sangat mudah menghafal jalan, tidak mudah nyasar, dan tahu arah meskipun berada di tempat baru." },
+  { id: 5, category: "communication", label: "Active Listening", question: "Saya sabar mendengarkan orang lain berbicara sampai selesai tanpa memotong, dan mudah memahami maksud mereka." },
+  { id: 6, category: "communication", label: "Speaking", question: "Saya bisa berbicara dengan jelas, percaya diri, dan mudah dipahami oleh orang yang baru saya kenal." },
+  { id: 7, category: "communication", label: "Service Orientation", question: "Saya senang membantu orang lain dan selalu berusaha membuat pelanggan merasa puas dan dihargai." },
+  { id: 8, category: "communication", label: "Coordination", question: "Saya lebih suka bekerja bersama-sama dalam sebuah tim dan mudah menyesuaikan diri dengan cara kerja orang lain." },
+  { id: 9, category: "problem_solving", label: "Troubleshooting", question: "Jika ada mesin, kendaraan, atau alat yang tiba-tiba rusak, saya suka mencari tahu apa penyebabnya." },
+  { id: 10, category: "problem_solving", label: "Time Management", question: "Saya selalu berusaha datang tepat waktu dan bisa menyelesaikan target kerja sebelum batas waktunya habis." },
+  { id: 11, category: "personality", label: "Realistic", question: "Saya lebih suka pekerjaan yang menggunakan tangan, mesin, atau bekerja di luar ruangan daripada duduk di belakang meja." },
+  { id: 12, category: "personality", label: "Investigative", question: "Saya suka menganalisis informasi, memecahkan masalah yang rumit, dan mencari tahu bagaimana sesuatu bekerja secara logika atau ilmiah." },
+  { id: 13, category: "personality", label: "Artistic", question: "Saya suka membuat desain, memikirkan ide-ide kreatif, atau melakukan pekerjaan yang tidak terlalu terikat aturan baku." },
+  { id: 14, category: "personality", label: "Social", question: "Saya merasa sangat puas jika pekerjaan saya bisa mengajari, menyembuhkan, atau berdampak langsung pada hidup orang lain." },
+  { id: 15, category: "personality", label: "Enterprising", question: "Saya berani mengambil risiko, suka memulai proyek baru, dan tidak malu untuk memimpin kelompok." },
+  { id: 16, category: "personality", label: "Conventional", question: "Saya sangat menyukai pekerjaan yang teratur, berulang-ulang, dan memiliki aturan yang jelas (seperti menyusun barang atau memasukkan data)." }
 ]
 
 const JOB_RECOMMENDATIONS = {
@@ -98,7 +99,7 @@ function calculateAndSaveResults(userId, res) {
         scores.communication.push(scoreValue)
       } else if (questionId >= 9 && questionId <= 10) {
         scores.problem_solving.push(scoreValue)
-      } else if (questionId >= 11 && questionId <= 15) {
+      } else if (questionId >= 11 && questionId <= 16) {
         scores.personality.push(scoreValue)
       }
     })

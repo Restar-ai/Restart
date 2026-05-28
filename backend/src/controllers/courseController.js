@@ -25,8 +25,11 @@ export const getCourseById = (req, res) => {
     db.query(`SELECT * FROM courses WHERE id = ?`, [id], (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
       if (!results.length)
-        return res.status(404).json({ error: "Course not found" });
-      res.json(results[0]);
+        return res.status(404).json({ message: "Course not found", error: "Course not found" });
+      res.status(200).json({
+        message: "Course detail retrieved successfully",
+        course: results[0]
+      });
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

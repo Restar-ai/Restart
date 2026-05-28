@@ -156,6 +156,9 @@ const login = async (req, res) => {
             gender: user.gender,
             birth_date: user.birth_date,
             address: user.address,
+            phone: user.phone,
+            education: user.education,
+            photo: user.photo,
             role: user.role,
             assessment_completed: user.assessment_completed || false,
           },
@@ -302,4 +305,79 @@ const updateProfile = async (req, res) => {
   }
 };
 
-export { register, login, updateAddress, updateProfile };
+const getProfile = async (req, res) => {
+  try {
+    const { user_id } = req.query;
+
+    if (!user_id) {
+      return res.status(400).json({
+        message: "user_id harus diisi",
+      });
+    }
+
+    getConnection().query(
+      "SELECT id, name, email, nik, gender, birth_date, address, phone, education, photo, role, assessment_completed FROM users WHERE id = ?",
+      [user_id],
+      (err, users) => {
+        if (err) {
+          return res.status(500).json({
+            message: "Gagal mengambil data profil",
+            error: err.message,
+          });
+        }
+
+        if (!users || users.length === 0) {
+          return res.status(404).json({
+            message: "User tidak ditemukan",
+          });
+        }
+
+        res.json({
+          message: "Data profil berhasil diambil",
+          user: {
+            id: users[0].id,
+            name: users[0].name,
+            email: users[0].email,
+            nik: users[0].nik,
+            gender: users[0].gender,
+            birth_date: users[0].birth_date,
+            address: users[0].address,
+            phone: users[0].phone,
+            education: users[0].education,
+            photo: users[0].photo,
+            role: users[0].role,
+            assessment_completed: users[0].assessment_completed,
+          },
+        });
+      },
+    );
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const { user_id } = req.body;
+
+    if (!user_id) {
+      return res.status(400).json({
+        message: "user_id harus diisi",
+      });
+    }
+
+    // Log logout activity (optional - untuk audit trail)
+    res.status(200).json({
+      message: "Logout berhasil",
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export { register, login, updateAddress, updateProfile, getProfile, logout };

@@ -10,6 +10,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
+import * as authApi from "../api/authApi";
 
 export default function TrainerDashboard() {
   const navigate = useNavigate();
@@ -95,11 +96,19 @@ export default function TrainerDashboard() {
     setShowLogoutModal(false);
   };
 
-  const handleLogoutConfirm = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setShowLogoutModal(false);
-    navigate("/");
+  const handleLogoutConfirm = async () => {
+    try {
+      if (user?.id) {
+        await authApi.logoutUser(user.id);
+      }
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setShowLogoutModal(false);
+      navigate("/");
+    }
   };
 
   if (loading) {
