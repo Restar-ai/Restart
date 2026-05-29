@@ -1,90 +1,124 @@
 # RESTART Backend
 
-Express API server for the RESTART Career Platform.
+Express REST API server for the RESTART Career Platform.
 
 ## Tech Stack
 
-- Node.js
-- Express
-- CORS
-- dotenv
+- Node.js + Express
+- mysql2 (MySQL database)
+- bcryptjs (password hashing)
+- jsonwebtoken (JWT authentication)
+- dotenv, cors
 
 ## Structure
 
-```txt
+```
 backend/
-  src/
-    app.js           # Express app setup, middleware, routes, error handlers
-    index.js         # Server bootstrap
-    controllers/     # HTTP request and response handlers
-    middleware/      # Express middleware
-    models/          # Database models
-    routes/          # Route definitions
-    services/        # Business logic
-    utils/           # Shared helpers
-    validators/      # Request validation
+└── src/
+    ├── app.js              # Express app: middleware, route registration
+    ├── index.js            # Server bootstrap
+    ├── controllers/        # Request / response handlers
+    │   ├── authController.js
+    │   ├── assessmentController.js
+    │   └── courseController.js
+    ├── routes/             # Route definitions
+    │   ├── authRoutes.js
+    │   ├── assessmentRoutes.js
+    │   └── courseRoutes.js
+    ├── services/           # Database connection and helpers
+    │   ├── db.js
+    │   └── initDb.js
+    ├── middleware/
+    │   ├── asyncHandler.js
+    │   └── errorHandler.js
+    ├── seeders/            # Database seed scripts
+    └── migrations/         # SQL migration files
 ```
 
-## Layering Pattern
+## API Endpoints
 
-Use this flow for new backend features:
+### Auth — `/api/auth`
 
-```txt
-route
-  -> validator or middleware
-  -> controller
-  -> service
-  -> model or external integration
-```
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/register` | Register a new user |
+| POST | `/login` | Login and receive JWT |
+| POST | `/logout` | Logout |
+| GET | `/profile` | Get authenticated user profile |
+| PUT | `/update-profile` | Update profile info |
+| PUT | `/update-address` | Update address |
 
-Guidelines:
+### Assessment — `/api/assessment`
 
-- Keep routes focused on URL and middleware registration.
-- Keep controllers thin: read request data, call services, return responses.
-- Put business rules in services.
-- Put database access in models or repositories when the database layer is added.
-- Put reusable request checks in validators or middleware.
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/questions` | Get all 16 assessment questions |
+| POST | `/submit` | Submit answers → get ML-based career recommendations |
+| POST | `/result` | Fetch saved assessment result for a user |
+
+### Courses — `/api`
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/courses` | List all courses |
+| GET | `/courses/:id` | Get course detail |
+| GET | `/users/:userId/courses` | Get courses enrolled by a user |
+| POST | `/enroll` | Enroll in a course |
+| PUT | `/progress` | Update course progress |
+| GET | `/users/:userId/stats` | Get dashboard stats for a user |
+| GET | `/trainer/dashboard` | Trainer dashboard data |
 
 ## Environment
 
-Copy `.env.example` to `.env` and adjust values when needed.
+Copy `.env.example` to `.env` and fill in the values:
 
 ```env
-PORT=3000
+PORT=5000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASS=
+DB_NAME=restart_db
+
+JWT_SECRET=your_secret_here
+
+AI_SERVICE_URL=http://localhost:8000
 ```
+
+`AI_SERVICE_URL` points to the FastAPI ML service. If unavailable, the assessment endpoint falls back to rule-based recommendations automatically.
 
 ## Scripts
 
 Run from `backend/`:
 
 ```bash
-npm run dev
-npm run start
+npm run dev     # starts with --watch (auto-restart on file change)
+npm run start   # production start
 ```
 
-Or run from the project root:
+Or from the project root:
 
 ```bash
 npm run backend:dev
 npm run backend:start
 ```
 
-## Starter Endpoints
+## Layering Pattern
 
-```txt
-GET /api/hello
-POST /api/echo
+```
+route → controller → service / DB query → JSON response
 ```
 
-`GET /api/hello` is used by the frontend to verify the frontend-backend connection.
+- **Routes** handle URL and middleware registration only.
+- **Controllers** read request data, call business logic, return responses.
+- **Services** contain database queries and shared utilities.
 
 ## Error Handling
 
-Errors thrown inside async route handlers are forwarded through `asyncHandler()` and returned by the global error handler.
-
-Current response shape:
+Async route errors are caught by `asyncHandler()` and forwarded to the global error handler, which returns:
 
 ```json
 {
