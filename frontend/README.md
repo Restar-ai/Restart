@@ -4,83 +4,76 @@ React + Vite web client for the RESTART Career Platform.
 
 ## Tech Stack
 
-- React
+- React 18
 - Vite
 - Tailwind CSS
-- ESLint
+- React Router DOM
 
 ## Structure
 
-```txt
+```
 frontend/
-  src/
-    api/         # API client and feature-specific API modules
-    assets/      # Static assets imported by React
-    components/  # Reusable UI components
-    constants/   # Shared constants
-    hooks/       # Reusable React hooks
-    pages/       # Page-level components
-    store/       # Client-side state
-    utils/       # Shared helpers
+└── src/
+    ├── App.jsx         # Route definitions
+    ├── main.jsx        # App entry point
+    ├── index.css       # Tailwind import
+    ├── api/            # API client and feature modules
+    │   ├── client.js        # Base fetch client (base URL, error handling)
+    │   ├── authApi.js
+    │   ├── assessmentApi.js
+    │   └── courseApi.js
+    └── pages/          # Page-level components
+        ├── Login.jsx
+        ├── Register.jsx
+        ├── DashboardPage.jsx
+        ├── AssessmentPage.jsx
+        ├── AssessmentResultPage.jsx
+        ├── CoursePage.jsx
+        ├── ProfilePage.jsx
+        ├── ParticipantProfile.jsx
+        └── TrainerDashboard.jsx
 ```
 
 ## API Pattern
 
-Use `src/api/client.js` for low-level request behavior such as `fetch`, headers, JSON parsing, and error handling.
+`src/api/client.js` handles base URL, JSON parsing, and error throwing.
 
-Create feature API modules for endpoint-specific calls:
+Feature API modules call specific endpoints and are the only place that imports `client.js`:
 
-```txt
-src/api/authApi.js
-src/api/jobsApi.js
-src/api/learningApi.js
+```
+src/api/authApi.js        → /api/auth/*
+src/api/assessmentApi.js  → /api/assessment/*
+src/api/courseApi.js      → /api/courses/* and /api/enroll, etc.
 ```
 
-Current example:
-
-```txt
-src/api/helloApi.js
-```
-
-Page or component code should call feature API modules instead of calling `fetch` directly.
+Page and component code calls feature API modules — never `fetch` directly.
 
 ## Styling
 
-Tailwind CSS is used as the main styling tool for the frontend. It lets components be styled directly with utility classes, so layout, spacing, color, and responsive behavior can stay close to the JSX that owns the UI.
-
-Tailwind is installed through the official Vite plugin:
-
-```txt
-tailwindcss
-@tailwindcss/vite
-```
-
-Global Tailwind styles are imported in `src/index.css`:
+Tailwind CSS utility classes are used for all component styling. Global styles are imported in `src/index.css`:
 
 ```css
 @import "tailwindcss";
 ```
 
-Use Tailwind utility classes for component-level styling. Add separate CSS files only when a style is reused often or is easier to maintain as a named class.
+Brand colors used throughout:
 
-Simple example:
-
-```jsx
-<section className="mx-auto max-w-xl p-8">
-  <h1 className="text-3xl font-bold text-slate-900">React + Vite + Express</h1>
-</section>
-```
+| Name | Hex |
+|------|-----|
+| Navy | `#233B5E` |
+| Soft Blue | `#CCD8E6` |
+| Cream | `#F7F6EE` |
 
 ## Environment
 
-Copy `.env.example` to `.env` and adjust values when needed.
+Copy `.env.example` to `.env`:
 
 ```env
 VITE_APP_NAME=Restart Career Platform
 VITE_API_URL=/api
 ```
 
-During development, `/api` is proxied by Vite to `http://localhost:3000`.
+During development, `/api` is proxied by Vite to `http://localhost:5000` (backend).
 
 ## Scripts
 
@@ -93,7 +86,7 @@ npm run lint
 npm run preview
 ```
 
-Or run from the project root:
+Or from the project root:
 
 ```bash
 npm run frontend:dev
@@ -103,8 +96,6 @@ npm run frontend:lint
 
 ## Development Server
 
-```txt
+```
 http://localhost:5173
 ```
-
-The frontend expects the backend API to be available at `http://localhost:3000` when using the default Vite proxy setup.
