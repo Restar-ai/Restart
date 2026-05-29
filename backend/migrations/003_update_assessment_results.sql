@@ -1,0 +1,17 @@
+-- Migration 003: Document new recommended_jobs format (ML model output)
+--
+-- No schema change required — the recommended_jobs column (JSON) remains as-is.
+-- Only the structure of the stored JSON has changed.
+--
+-- Old format (rule-based):
+--   ["Desainer Grafis", "Video Editor", "Fotografer"]
+--
+-- New format (ML model — top-3 with confidence):
+--   [
+--     {"profession": "Desainer Grafis", "confidence": 0.9231, "rank": 1},
+--     {"profession": "Video Editor",    "confidence": 0.0521, "rank": 2},
+--     {"profession": "Fotografer",      "confidence": 0.0198, "rank": 3}
+--   ]
+--
+-- The AssessmentResultPage handles both formats automatically.
+-- Existing rows with the old format will display correctly (confidence bar hidden).
