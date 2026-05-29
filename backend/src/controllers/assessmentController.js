@@ -1,6 +1,5 @@
 import { getConnection } from "../services/db.js"
 
-// Assessment questions data
 const ASSESSMENT_QUESTIONS = [
   { id: 1, category: "physical", label: "Stamina", question: "Saya mampu melakukan pekerjaan fisik yang menguras tenaga (seperti berdiri lama atau mengangkat barang) berjam-jam tanpa cepat lelah." },
   { id: 2, category: "physical", label: "Static Strength", question: "Saya kuat mengangkat, mendorong, atau menarik beban yang berat secara berulang-ulang." },
@@ -74,10 +73,36 @@ export const submitAssessment = (req, res) => {
   }
 }
 
-function calculateAndSaveResults(userId, res) {
+// Convert scale 1-5 (Likert) to scale 1-7 (model input)
+function convertScale(value) {
+  return ((value - 1) / 4) * 6 + 1
+}
+
+async function callAiService(features) {
+  const aiServiceUrl = process.env.AI_SERVICE_URL || "http://localhost:8000"
+  const response = await fetch(`${aiServiceUrl}/predict`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ features }),
+    signal: AbortSignal.timeout(5000)
+  })
+
+  if (!response.ok) throw new Error(`AI service responded with ${response.status}`)
+
+  const data = await response.json()
+  if (!data.success || !data.predictions) throw new Error("Invalid AI response format")
+
+  return data.predictions.map(p => ({
+    profession: p.profession,
+    confidence: p.confidence,
+    rank: p.rank
+  }))
+}
+
+async function calculateAndSaveResults(userId, res) {
   const db = getConnection()
 
-  db.query("SELECT * FROM assessment_answers WHERE user_id = ?", [userId], (err, answers) => {
+  db.query("SELECT * FROM assessment_answers WHERE user_id = ? ORDER BY question_id ASC", [userId], async (err, answers) => {
     if (err) {
       return res.status(500).json({ message: "Error calculating results" })
     }
@@ -112,15 +137,28 @@ function calculateAndSaveResults(userId, res) {
     const problemSolvingScore = calculateAvg(scores.problem_solving)
     const personalityScore = calculateAvg(scores.personality)
 
-    const recommendedJobs = generateJobRecommendations(
-      physicalScore,
-      communicationScore,
-      problemSolvingScore,
-      personalityScore
-    )
+    // Build feature array in order (question_id 1-16), default 3 if missing
+    const answerMap = {}
+    answers.forEach(a => { answerMap[a.question_id] = a.answer })
+    const rawFeatures = []
+    for (let qId = 1; qId <= 16; qId++) {
+      rawFeatures.push(answerMap[qId] ?? 3)
+    }
+
+    // Convert 1-5 scale to 1-7 for model
+    const modelFeatures = rawFeatures.map(convertScale)
+
+    let recommendedJobs
+    try {
+      recommendedJobs = await callAiService(modelFeatures)
+      console.log("AI service prediction successful")
+    } catch (aiError) {
+      console.warn("AI service unavailable, using rule-based fallback:", aiError.message)
+      recommendedJobs = generateJobRecommendations(physicalScore, communicationScore, problemSolvingScore, personalityScore)
+    }
 
     const insertQuery = `
-      INSERT INTO assessment_results 
+      INSERT INTO assessment_results
       (user_id, physical_score, communication_score, problem_solving_score, personality_score, recommended_jobs)
       VALUES (?, ?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE
@@ -140,10 +178,10 @@ function calculateAndSaveResults(userId, res) {
 
         db.query("UPDATE users SET assessment_completed = 1 WHERE id = ?", [userId], (err) => {
           if (err) {
-            console.error("Error updating user flag - SQL Error:", err);
-            return res.status(500).json({ 
+            console.error("Error updating user flag - SQL Error:", err)
+            return res.status(500).json({
               message: "Error updating assessment flag",
-              error: err.message 
+              error: err.message
             })
           }
 
