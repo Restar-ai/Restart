@@ -1,0 +1,14 @@
+# Server
+PORT=3000
+NODE_ENV=development
+
+# Frontend URL
+CLIENT_URL=http://localhost:5173
+
+# Database
+# DB_URL=
+# DB_USER=
+# DB_PASS=
+
+# JWT
+# JWT_SECRET=
