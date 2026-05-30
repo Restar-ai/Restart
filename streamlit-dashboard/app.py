@@ -24,6 +24,7 @@ if "dark_mode" not in st.session_state:
 def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
 
+
 IS_DARK = st.session_state.dark_mode
 
 # ================================================================
@@ -61,9 +62,9 @@ DARK = dict(
 )
 
 LIGHT = dict(
-    bg="#F7F6EE",
+    bg="#F3F6FA",
     surface="#FFFFFF",
-    surface2="#F1F2EF",
+    surface2="#EEF3F8",
     border="rgba(35,59,94,0.12)",
     border2="rgba(35,59,94,0.22)",
     text_primary="#233B5E",
@@ -71,14 +72,14 @@ LIGHT = dict(
     text_muted="#7E8A98",
     accent="#233B5E",
     accent2="#5E7B9A",
-    sidebar_bg="#EFEFE8",
+    sidebar_bg="#EEF3F8",
     sidebar_border="rgba(35,59,94,0.12)",
     metric_label="#6B7788",
     metric_value="#233B5E",
     metric_delta="#5E7B9A",
     tab_inactive="#637184",
-    tab_bg="#ECEDE8",
-    tab_border="rgba(35,59,94,0.10)",
+    tab_bg="#E8EEF5",
+    tab_border="rgba(35,59,94,0.12)",
     chart_paper="rgba(0,0,0,0)",
     chart_grid="rgba(35,59,94,0.08)",
     chart_font="#233B5E",
@@ -89,6 +90,7 @@ T = DARK if IS_DARK else LIGHT
 # ================================================================
 # HELPER WARNA
 # ================================================================
+
 def hex_to_rgba(hex_color, alpha=1.0):
     if not isinstance(hex_color, str) or not hex_color.startswith("#"):
         return hex_color
@@ -102,7 +104,7 @@ def hex_to_rgba(hex_color, alpha=1.0):
         return f"rgba(35,59,94,{alpha})"
 
 # ================================================================
-# DESKRIPSI PROFESI UMKM (Fitur Baru)
+# DESKRIPSI PROFESI UMKM
 # ================================================================
 DESKRIPSI_PROFESI = {
     "Admin Data": "Mengelola, memasukkan, dan merapikan data operasional atau inventaris UMKM secara akurat dan sistematis menggunakan perangkat lunak.",
@@ -191,6 +193,39 @@ h1, h2, h3, h4, h5, h6 {{
     border-radius: 12px !important;
 }}
 
+/* ================= LABEL INPUT / MULTISELECT ================= */
+[data-testid="stMultiSelect"] label,
+[data-testid="stMultiSelect"] label p,
+[data-testid="stMultiSelect"] label div,
+[data-testid="stMultiSelect"] label span,
+[data-testid="stSelectbox"] label,
+[data-testid="stSelectbox"] label p,
+[data-testid="stSelectbox"] label div,
+[data-testid="stSelectbox"] label span {{
+    color: {T['text_primary']} !important;
+    opacity: 1 !important;
+}}
+
+/* ================= MULTISELECT TAG ================= */
+[data-baseweb="tag"],
+[data-testid="stMultiSelect"] span[data-baseweb="tag"] {{
+    background-color: {T['accent']} !important;
+    color: {"#233B5E" if IS_DARK else "#F7F6EE"} !important;
+    border-radius: 8px !important;
+}}
+
+[data-baseweb="tag"] span,
+[data-baseweb="tag"] button,
+[data-testid="stMultiSelect"] span[data-baseweb="tag"] span,
+[data-testid="stMultiSelect"] span[data-baseweb="tag"] button {{
+    color: {"#233B5E" if IS_DARK else "#F7F6EE"} !important;
+}}
+
+[data-baseweb="tag"] svg,
+[data-testid="stMultiSelect"] span[data-baseweb="tag"] svg {{
+    fill: {"#233B5E" if IS_DARK else "#F7F6EE"} !important;
+}}
+
 .stButton > button {{
     background: {T['surface']} !important;
     color: {T['text_primary']} !important;
@@ -206,13 +241,50 @@ h1, h2, h3, h4, h5, h6 {{
     transform: translateY(-1px);
 }}
 
-/* Tombol Download Khusus */
-.download-btn-container .stButton > button {{
-    background: linear-gradient(135deg, {T['accent']}, {T['accent2']}) !important;
-    color: {"#233B5E" if IS_DARK else "#F7F6EE"} !important;
-    border: none !important;
-    margin-top: 10px;
-    width: 100%;
+/* ================= THEME BUTTON ================= */
+.theme-footer {{
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid {T['border']};
+}}
+
+.theme-caption {{
+    color: {T['text_muted']};
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    margin-bottom: 0.55rem;
+    display: block;
+}}
+
+[data-testid="stSidebar"] .stButton > button {{
+    width: 100% !important;
+    background: {T['surface']} !important;
+    color: {T['text_primary']} !important;
+    border: 1px solid {T['border2']} !important;
+    border-radius: 12px !important;
+    padding: 0.62rem 0.85rem !important;
+    font-family: Helvetica, Arial, sans-serif !important;
+    font-size: 0.86rem !important;
+    font-weight: 700 !important;
+    transition: all 0.18s ease !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+}}
+
+[data-testid="stSidebar"] .stButton > button:hover {{
+    border-color: {T['accent']} !important;
+    background: {hex_to_rgba(T['accent'], 0.10)} !important;
+    color: {T['text_primary']} !important;
+    transform: translateY(-1px);
+}}
+
+[data-testid="stSidebar"] .stButton > button:active,
+[data-testid="stSidebar"] .stButton > button:focus,
+[data-testid="stSidebar"] .stButton > button:focus-visible {{
+    border-color: {T['accent']} !important;
+    box-shadow: 0 0 0 3px {hex_to_rgba(T['accent'], 0.18)} !important;
+    outline: none !important;
 }}
 
 /* ================= TAB ATAS ================= */
@@ -250,6 +322,29 @@ h1, h2, h3, h4, h5, h6 {{
 .stTabs [aria-selected="true"] {{
     background: {T['accent']} !important;
     color: {"#233B5E" if IS_DARK else "#F7F6EE"} !important;
+    border-bottom: 3px solid {T['accent']} !important;
+    box-shadow: 0 4px 10px {hex_to_rgba(T['accent'], 0.22)} !important;
+}}
+
+/* hapus garis merah default tab Streamlit */
+.stTabs [data-baseweb="tab-highlight"] {{
+    background-color: {T['accent']} !important;
+    height: 3px !important;
+    border-radius: 999px !important;
+}}
+
+/* override pseudo underline default */
+.stTabs [data-baseweb="tab"]::after,
+.stTabs [data-baseweb="tab"]::before {{
+    background-color: {T['accent']} !important;
+    border-color: {T['accent']} !important;
+}}
+
+/* focus tab agar tidak merah */
+.stTabs [data-baseweb="tab"]:focus,
+.stTabs [data-baseweb="tab"]:focus-visible {{
+    outline: none !important;
+    box-shadow: none !important;
 }}
 
 /* ================= METRIC CARD ================= */
@@ -258,7 +353,14 @@ h1, h2, h3, h4, h5, h6 {{
     border: 1px solid {T['border']} !important;
     border-radius: 16px !important;
     padding: 20px 22px !important;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    transition: all 0.3s ease;
+}}
+
+[data-testid="stMetric"]:hover {{
+    border: 1px solid {T['accent']} !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08) !important;
+    transform: translateY(-2px);
 }}
 
 [data-testid="stMetric"] label {{
@@ -402,25 +504,39 @@ h1, h2, h3, h4, h5, h6 {{
 
 .riasec-card {{
     border-radius: 18px;
-    padding: 22px;
-    margin-bottom: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
     background: {T['surface']};
     border: 1px solid {T['border']};
-    color: {T['text_primary']};
-    box-shadow: 0 12px 28px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    transition: all 0.3s ease;
+
+    min-height: 240px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}}
+
+.riasec-card:hover {{
+    transform: translateY(-5px); /* Kartu naik sedikit saat di-hover */
+    box-shadow: 0 12px 20px rgba(0,0,0,0.08); /* Bayangan lebih tebal */
+    border-color: {T['accent']}; /* Border berubah warna */
 }}
 
 .riasec-code {{
     width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    background: {hex_to_rgba(T['accent'], 0.14)};
-    color: {T['accent']};
+    height: 28px;
+    border-radius: 999px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     font-weight: 800;
+    font-size: 0.82rem;
     margin-bottom: 14px;
+
+    box-sizing: border-box;
 }}
 
 .riasec-title {{
@@ -438,9 +554,12 @@ h1, h2, h3, h4, h5, h6 {{
 
 .riasec-desc {{
     color: {T['text_secondary']};
-    font-size: 0.85rem;
-    line-height: 1.58;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    overflow-wrap: break-word;
+    word-break: normal;
 }}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -481,7 +600,7 @@ RIASEC_ID = {
     "Conventional": "C",
 }
 
-# Interpretasi Holland Code
+# INTERPRETASI HOLLAND CODE
 HOLLAND_DESC = {
     "R": "bekerja secara praktis, mengeksekusi hal teknis, dan berorientasi pada hasil nyata",
     "I": "melakukan analisis mendalam, observasi, dan pemecahan masalah logis",
@@ -490,6 +609,16 @@ HOLLAND_DESC = {
     "E": "memimpin, mengambil inisiatif, dan berorientasi pada target bisnis",
     "C": "bekerja secara terstruktur, sangat rapi, dan berbasis pada akurasi data"
 }
+
+# DEFINISI KARTU RIASEC
+cards = [
+    dict(code="R", title="Realistic", sub="The Doers", desc="Berorientasi pada aktivitas fisik dan teknis. Cocok dengan pekerjaan yang melibatkan alat, mesin, operasi lapangan, atau proses praktis."),
+    dict(code="I", title="Investigative", sub="The Thinkers", desc="Analitis dan senang memecahkan masalah. Cocok dengan pekerjaan berbasis data, riset, observasi, dan penalaran logis."),
+    dict(code="A", title="Artistic", sub="The Creators", desc="Kreatif, ekspresif, dan menyukai ruang eksplorasi. Cocok untuk pekerjaan yang membutuhkan ide, visual, tulisan, atau desain."),
+    dict(code="S", title="Social", sub="The Helpers", desc="Berorientasi pada interaksi dan bantuan kepada orang lain. Cocok untuk pekerjaan edukasi, layanan, komunikasi, dan pendampingan."),
+    dict(code="E", title="Enterprising", sub="The Persuaders", desc="Suka memimpin, memengaruhi, dan mengambil keputusan. Cocok untuk pekerjaan bisnis, penjualan, negosiasi, dan manajemen."),
+    dict(code="C", title="Conventional", sub="The Organizers", desc="Terstruktur, teliti, dan sistematis. Cocok untuk pekerjaan administrasi, data, dokumentasi, keuangan, dan prosedur operasional.")
+]
 
 PALETTE = [
     "#233B5E",
@@ -544,7 +673,6 @@ df = load_and_aggregate()
 
 @st.cache_data
 def convert_df_to_csv(dataframe):
-    # Cache agar tidak komputasi ulang tiap kali tombol di klik
     return dataframe.to_csv(index=False, sep=";").encode('utf-8')
 
 
@@ -578,9 +706,7 @@ with st.sidebar:
             unsafe_allow_html=True
         )
 
-    theme_label = "Light mode" if IS_DARK else "Dark mode"
-    st.button(theme_label, on_click=toggle_theme, use_container_width=True)
-
+    # ================= PILIH PROFESI =================
     st.markdown("---")
     st.markdown('<span class="section-label">Pilih Profesi</span>', unsafe_allow_html=True)
 
@@ -611,12 +737,28 @@ with st.sidebar:
             <span class="sp-label">Rata-rata Keahlian</span>
             <span class="sp-value">{sk.mean():.2f} / 5.0</span>
         </div>
-        <div class="stat-pill">
+        <div class="stat-pill" title="Jumlah kompetensi dengan skor di atas 3.0">
             <span class="sp-label">Keahlian Kritis</span>
-            <span class="sp-value" style="color:{T['accent']};">{(sk >= 3.5).sum()} fitur</span>
+            <span class="sp-value" style="color:{T['accent']};">{(sk >= 3.0).sum()} dari 10</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ================= THEME BUTTON — BAWAH SIDEBAR =================
+    st.markdown(
+        """
+        <div class="theme-footer">
+            <span class="theme-caption">Appearance</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    theme_label = "☀️  Light Mode" if IS_DARK else "🌙  Dark Mode"
+
+    if st.button(theme_label, key="theme_button", use_container_width=True):
+        toggle_theme()
+        st.rerun()
 
 # ================================================================
 # TABS UTAMA
@@ -651,14 +793,11 @@ with tab1:
     k1, k2, k3, k4 = st.columns(4)
 
     with k1:
-        st.metric("Kompetensi Utama", sk.idxmax(), f"{sk.max():.2f} / 5.0")
-
+        st.metric("Kompetensi Utama", sk.idxmax(), f"{sk.max():.2f}")
     with k2:
-        st.metric("RIASEC Dominan", dom_r, f"Kode 3: {code3}")
-
+        st.metric("RIASEC Dominan", dom_r, f"{code3}")
     with k3:
         st.metric("Skill Sosial", f"{rp[SOSIAL].mean():.2f}", "Rata-rata")
-
     with k4:
         st.metric("Skill Fisik", f"{rp[FISIK].mean():.2f}", "Rata-rata")
 
@@ -683,11 +822,10 @@ with tab1:
                 y=sk_sorted.index,
                 orientation="h",
                 marker=dict(
-                    color=[
-                        "#233B5E", "#314C72", "#426084", "#587798", "#6F8EAB",
-                        "#8BA6BD", "#A7BACD", "#CCD8E6", "#D5D5D7", "#E8E8E4"
-                    ],
-                    line=dict(color=hex_to_rgba(T["accent"], 0.18), width=1)
+                    color=sk_sorted.values, # Warna berubah berdasarkan nilai (skor)
+                    colorscale='Blues',     # Gunakan gradasi warna bawaan Plotly
+                    showscale=False,
+                    line=dict(color=T["accent"], width=1)
                 ),
                 text=[f"{v:.2f}" for v in sk_sorted.values],
                 textposition="outside",
@@ -713,6 +851,47 @@ with tab1:
             )
 
             st.plotly_chart(fig_b, use_container_width=True)
+
+            # SKILL GAP ANALYSIS
+            strongest_skill = sk.idxmax()
+            strongest_score = sk.max()
+
+            weakest_skill = sk.idxmin()
+            weakest_score = sk.min()
+
+            priority_skills = sk.sort_values(ascending=True).head(3)
+            avg_skill = sk.mean()
+
+            if avg_skill < 2.0:
+                readiness_level = "Perlu Pelatihan Intensif"
+            elif avg_skill < 3.0:
+                readiness_level = "Siap Dasar"
+            elif avg_skill < 4.0:
+                readiness_level = "Cukup Siap"
+            else:
+                readiness_level = "Sangat Siap"
+
+            priority_text = ", ".join([
+                f"{skill} ({score:.2f})"
+                for skill, score in priority_skills.items()
+            ])
+
+            st.markdown("---")
+            st.markdown(
+                """
+                <span class="section-label">Skill Gap Analysis</span>
+                <div class="section-title">Insight Pengembangan Kompetensi</div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(f"""
+            **Kekuatan utama:** `{strongest_skill}` dengan skor **{strongest_score:.2f}**.  
+            **Gap utama:** `{weakest_skill}` dengan skor **{weakest_score:.2f}**.  
+            **Level kesiapan:** **{readiness_level}** berdasarkan rata-rata skor **{avg_skill:.2f}/5.0**.
+            """)
+
+            st.markdown(f"**Prioritas pengembangan:** {priority_text}.")
 
     with c2:
         with st.container(border=True):
@@ -757,13 +936,13 @@ with tab1:
 
             st.plotly_chart(fig_rd, use_container_width=True)
 
-            # --- FITUR BARU: INTERPRETASI KODE 3 HURUF ---
+            # INTERPRETASI KODE 3 HURUF
             top1, top2, top3 = code3[0], code3[1], code3[2]
             
             st.markdown(f"""
             <div style="background:{hex_to_rgba(T['accent'], 0.08)}; border:1px solid {T['border2']}; border-radius:12px; padding:15px; margin-bottom:20px; margin-top:-5px;">
                 <div style="font-size:0.75rem; font-weight:700; color:{T['accent']}; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:5px;">
-                    🧠 Interpretasi DNA Karier ({code3})
+                    Interpretasi DNA Karier ({code3})
                 </div>
                 <div style="font-size:0.85rem; color:{T['text_secondary']}; line-height:1.6;">
                     Lingkungan kerja ini paling optimal bagi individu yang suka <b>{HOLLAND_DESC[top1]}</b>, 
@@ -810,6 +989,12 @@ with tab2:
         default=[profesi_terpilih],
         max_selections=4
     )
+
+    st.markdown("""
+    <small style="color: #7E8A98; font-style: italic;">
+    Tips: Kamu bisa membandingkan hingga 4 profesi sekaligus untuk melihat perbedaan profil kompetensi yang paling kontras.
+    </small>
+    """, unsafe_allow_html=True)
 
     if len(comp) >= 2:
         c1, c2 = st.columns(2, gap="medium")
@@ -911,8 +1096,12 @@ with tab2:
                 st.plotly_chart(fig_g, use_container_width=True)
 
     else:
-        st.info("Pilih minimal 2 profesi untuk melihat grafik komparasi.")
-
+        st.markdown("""
+        <div style="text-align: center; padding: 40px; border: 2px dashed #CCD8E6; border-radius: 18px; margin-top: 20px;">
+            <h3 style="color: #233B5E;">🔍 Belum ada perbandingan</h3>
+            <p style="color: #475A75;">Pilih minimal <b>2 profesi</b> dari menu di atas untuk melihat analisis komparatif performa, RIASEC, dan kompetensi.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ================================================================
 # TAB 3 — KAMUS RIASEC
@@ -923,53 +1112,38 @@ with tab3:
         unsafe_allow_html=True
     )
 
-    cards = [
-        dict(
-            code="R",
-            title="Realistic",
-            sub="The Doers",
-            desc="Berorientasi pada aktivitas fisik dan teknis. Cocok dengan pekerjaan yang melibatkan alat, mesin, operasi lapangan, atau proses praktis."
-        ),
-        dict(
-            code="I",
-            title="Investigative",
-            sub="The Thinkers",
-            desc="Analitis dan senang memecahkan masalah. Cocok dengan pekerjaan berbasis data, riset, observasi, dan penalaran logis."
-        ),
-        dict(
-            code="A",
-            title="Artistic",
-            sub="The Creators",
-            desc="Kreatif, ekspresif, dan menyukai ruang eksplorasi. Cocok untuk pekerjaan yang membutuhkan ide, visual, tulisan, atau desain."
-        ),
-        dict(
-            code="S",
-            title="Social",
-            sub="The Helpers",
-            desc="Berorientasi pada interaksi dan bantuan kepada orang lain. Cocok untuk pekerjaan edukasi, layanan, komunikasi, dan pendampingan."
-        ),
-        dict(
-            code="E",
-            title="Enterprising",
-            sub="The Persuaders",
-            desc="Suka memimpin, memengaruhi, dan mengambil keputusan. Cocok untuk pekerjaan bisnis, penjualan, negosiasi, dan manajemen."
-        ),
-        dict(
-            code="C",
-            title="Conventional",
-            sub="The Organizers",
-            desc="Terstruktur, teliti, dan sistematis. Cocok untuk pekerjaan administrasi, data, dokumentasi, keuangan, dan prosedur operasional."
-        ),
-    ]
-
     gc1, gc2, gc3 = st.columns(3, gap="medium")
     gcols = [gc1, gc2, gc3]
 
     for i, c in enumerate(cards):
         with gcols[i % 3]:
+            card_color = RIASEC_COLORS.get(c['title'], T['accent'])
+
+            badge_bg = (
+                hex_to_rgba(card_color, 0.45)
+                if IS_DARK
+                else hex_to_rgba(card_color, 0.16)
+            )
+            badge_text = "#F7F6EE" if IS_DARK else card_color
+            badge_border = (
+                hex_to_rgba(card_color, 0.75)
+                if IS_DARK
+                else hex_to_rgba(card_color, 0.28)
+            )
+            badge_shadow = (
+                hex_to_rgba(card_color, 0.12)
+                if IS_DARK
+                else "rgba(0,0,0,0)"
+            )
+
             st.markdown(f"""
-            <div class="riasec-card">
-                <div class="riasec-code">{c['code']}</div>
+            <div class="riasec-card" style="border-top: 5px solid {card_color};">
+                <div class="riasec-code" style="
+                    background:{badge_bg};
+                    color:{badge_text};
+                    border:1px solid {badge_border};
+                    box-shadow:0 0 0 3px {badge_shadow};
+                ">{c['code']}</div>
                 <div class="riasec-title">{c['title']}</div>
                 <div class="riasec-sub">{c['sub']}</div>
                 <div class="riasec-desc">{c['desc']}</div>
