@@ -58,6 +58,9 @@ const initializeDatabase = () => {
               address TEXT NOT NULL,
               role ENUM('trainer','participant') NOT NULL DEFAULT 'participant',
               assessment_completed BOOLEAN DEFAULT FALSE,
+              phone VARCHAR(20),
+              education VARCHAR(50),
+              photo LONGTEXT,
               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
