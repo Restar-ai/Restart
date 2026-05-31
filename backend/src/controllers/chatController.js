@@ -129,24 +129,49 @@ export const chat = async (req, res) => {
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}))
-      if (response.status === 429) {
+      const status = response.status
+
+      if (status === 429) {
         const seconds = Math.ceil(
           err?.error?.message?.match(/retry in (\d+)/)?.[1] || 60
         )
-        return res.status(429).json({
-          message: `AI sedang sibuk, coba lagi dalam ${seconds} detik.`
-        })
+        return res.status(429).json({ message: `AI sedang sibuk, coba lagi dalam ${seconds} detik.` })
       }
-      console.error("Gemini API error:", err)
-      return res.status(502).json({ message: "Gagal menghubungi AI" })
+      if (status === 401 || status === 403) {
+        console.error("Gemini API key invalid:", status)
+        return res.status(503).json({ message: "Konfigurasi AI bermasalah, hubungi admin." })
+      }
+      if (status === 400) {
+        console.error("Gemini bad request:", err)
+        return res.status(400).json({ message: "Pesan tidak dapat diproses, coba kirim ulang." })
+      }
+      if (status === 503 || status === 500) {
+        return res.status(503).json({ message: "Layanan AI sedang gangguan, coba lagi sebentar." })
+      }
+
+      console.error("Gemini API error:", status, err)
+      return res.status(502).json({ message: "Gagal menghubungi AI." })
     }
 
     const data = await response.json()
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak bisa menjawab saat ini."
+    const candidate = data.candidates?.[0]
 
+    // Safety block — Gemini returned no text due to content policy
+    if (!candidate || candidate.finishReason === "SAFETY") {
+      return res.json({ reply: "Maaf, saya tidak bisa membahas topik tersebut." })
+    }
+
+    const reply = candidate.content?.parts?.[0]?.text || "Maaf, saya tidak bisa menjawab saat ini."
     res.json({ reply })
+
   } catch (error) {
+    if (error.name === "TimeoutError" || error.name === "AbortError") {
+      return res.status(504).json({ message: "AI terlalu lama merespons, coba lagi." })
+    }
+    if (error.cause?.code === "ENOTFOUND" || error.cause?.code === "ECONNREFUSED") {
+      return res.status(503).json({ message: "Tidak dapat terhubung ke layanan AI." })
+    }
     console.error("Chat error:", error.message)
-    res.status(500).json({ message: "Terjadi kesalahan pada chat AI" })
+    res.status(500).json({ message: "Terjadi kesalahan, coba lagi." })
   }
 }
