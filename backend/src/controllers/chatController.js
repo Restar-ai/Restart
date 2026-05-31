@@ -129,6 +129,14 @@ export const chat = async (req, res) => {
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}))
+      if (response.status === 429) {
+        const seconds = Math.ceil(
+          err?.error?.message?.match(/retry in (\d+)/)?.[1] || 60
+        )
+        return res.status(429).json({
+          message: `AI sedang sibuk, coba lagi dalam ${seconds} detik.`
+        })
+      }
       console.error("Gemini API error:", err)
       return res.status(502).json({ message: "Gagal menghubungi AI" })
     }
