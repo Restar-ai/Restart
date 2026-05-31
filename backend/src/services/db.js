@@ -71,34 +71,23 @@ const initializeDatabase = () => {
             }
             console.log("✓ Table users sudah ada/dibuat");
 
-            // Ensure assessment_completed column exists
-            const alterUsersTable = `ALTER TABLE users ADD COLUMN IF NOT EXISTS assessment_completed BOOLEAN DEFAULT FALSE`;
-            
-            db.query(alterUsersTable, (err) => {
-              if (err && err.code !== 'ER_DUP_FIELDNAME') {
-                console.warn("Warning altering users table:", err.message);
-              } else if (!err) {
-                console.log("✓ Column assessment_completed checked/added");
-              }
+            const createCoursesTable = `
+              CREATE TABLE IF NOT EXISTS courses (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                instructor VARCHAR(255) NOT NULL,
+                category VARCHAR(100),
+                image_url VARCHAR(500),
+                duration_hours INT,
+                difficulty_level VARCHAR(50),
+                price DECIMAL(10,2),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+              )
+            `;
 
-              // Buat tabel courses
-              const createCoursesTable = `
-                CREATE TABLE IF NOT EXISTS courses (
-                  id INT AUTO_INCREMENT PRIMARY KEY,
-                  title VARCHAR(255) NOT NULL,
-                  description TEXT,
-                  instructor VARCHAR(255) NOT NULL,
-                  category VARCHAR(100),
-                  image_url VARCHAR(500),
-                  duration_hours INT,
-                  difficulty_level VARCHAR(50),
-                  price DECIMAL(10,2),
-                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                )
-              `;
-
-              db.query(createCoursesTable, (err) => {
+            db.query(createCoursesTable, (err) => {
               if (err) {
                 console.error("Error creating courses table:", err.message);
                 reject(err);
@@ -174,7 +163,6 @@ const initializeDatabase = () => {
                   });
                 });
               });
-            });
             });
           });
         });
