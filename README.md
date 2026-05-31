@@ -1,12 +1,12 @@
 # RESTART Career Platform
 
-RESTART is a web-based platform that helps former inmates rebuild their career pathway through structured learning, career assessment powered by a machine learning model, and job recommendations matched to their skills and personality.
+RESTART is a web-based platform that helps former inmates rebuild their career pathway through structured learning, career assessment powered by a machine learning model, and an AI chat assistant for career guidance.
 
 This repository contains three separate services:
 
 - `frontend/` — React + Vite web client (port 5173)
 - `backend/` — Express REST API server (port 5000)
-- `ai-service/` — FastAPI prediction service with a Keras DNN model (port 8000)
+- `ai-service/` — FastAPI ML prediction + RAG service (port 8000)
 
 ## Tech Stack
 
@@ -16,6 +16,8 @@ This repository contains three separate services:
 | Backend | Node.js, Express, mysql2, bcryptjs, jsonwebtoken |
 | Database | MySQL (`restart_db`) |
 | AI Service | Python, FastAPI, TensorFlow / Keras |
+| Chat AI | Google Gemini Flash (via API) |
+| RAG | ChromaDB, sentence-transformers |
 
 ## Repository Structure
 
@@ -23,7 +25,7 @@ This repository contains three separate services:
 restart-career-platform/
 ├── backend/          # Express API application
 ├── frontend/         # React + Vite application
-├── ai-service/       # FastAPI ML prediction service
+├── ai-service/       # FastAPI ML prediction + RAG service
 └── package.json      # Root scripts for running backend and frontend
 ```
 
@@ -47,14 +49,25 @@ cd ../frontend && npm install
 ### 2. Configure environment
 
 ```bash
-# Backend
 cp backend/.env.example backend/.env
-# Fill in DB_HOST, DB_USER, DB_PASS, DB_NAME, JWT_SECRET
 ```
+
+Fill in the values in `backend/.env`:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=restart_db
+JWT_SECRET=your_secret_here
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Get a free Gemini API key at [https://aistudio.google.com](https://aistudio.google.com).
 
 ### 3. Set up the database
 
-Run migrations in order using your MySQL client:
+Run migrations in order:
 
 ```bash
 mysql -u root restart_db < backend/migrations/001_create_users_table.sql
@@ -71,6 +84,8 @@ venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
+
+On first startup, the service loads the embedding model from `ai-service/models/` (local) and indexes the career knowledge base into ChromaDB.
 
 ### 5. Start backend and frontend
 
@@ -106,17 +121,31 @@ npm run start           # runs backend + frontend concurrently
 | Backend | http://localhost:5000 |
 | AI Service | http://localhost:8000 |
 
-## Request Flow (Assessment)
+## Request Flows
+
+### Assessment (ML-based career recommendation)
 
 ```
 React page
-  → assessmentApi.js
   → POST /api/assessment/submit
   → assessmentController.js
-  → POST http://localhost:8000/predict  (AI service)
-  → Keras DNN model → top-3 professions + confidence
-  → save to MySQL assessment_results
-  → JSON response → AssessmentResultPage.jsx
+  → POST http://localhost:8000/predict   (AI service)
+  → Keras DNN → top-3 professions + confidence scores
+  → save to MySQL
+  → AssessmentResultPage.jsx
 ```
 
-If the AI service is unreachable, the backend automatically falls back to a rule-based recommendation so the assessment never fails.
+If the AI service is unreachable, the backend falls back to rule-based recommendations automatically.
+
+### Chat AI (career guidance)
+
+```
+DashboardPage.jsx
+  → POST /api/chat  { message, context }
+  → chatController.js
+  → POST http://localhost:8000/retrieve  (RAG context lookup)
+  → Gemini Flash API  (system prompt + RAG docs + user context)
+  → reply text → chat window
+```
+
+User context passed to Gemini includes: assessment result, top professions, skill scores, enrolled courses, and learning progress.
