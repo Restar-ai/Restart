@@ -58,6 +58,7 @@ The analytics and raw data processing pipelines are located in the `data-science
 cd data-science/dashboard
 pip install -r requirements.txt
 streamlit run app.py
+```
 
 ## Getting Started
 
@@ -214,9 +215,8 @@ User context sent with every message: assessment result, top professions, skill 
 | `profession_classes.json` | `ai-service/model/` | Yes | 12 output profession labels |
 | `paraphrase-multilingual-MiniLM-L12-v2` | `ai-service/models/` | No | Sentence embedding model for RAG (449 MB) |
 
-### 3. Data Dictionary
+---
 
-```markdown
 ## Data Dictionary
 
 The `Master_Data_RESTART.csv` dataset consists of 2,400 rows and 17 columns. Below is the breakdown of the features used to train the recommendation system:
