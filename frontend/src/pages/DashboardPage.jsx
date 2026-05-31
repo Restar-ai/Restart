@@ -2,12 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiLogOut,
-  FiBook,
-  FiCheckCircle,
-  FiTrendingUp,
-  FiPlayCircle,
-  FiClock,
-  FiActivity,
   FiBriefcase,
   FiMessageCircle,
   FiX,
@@ -188,7 +182,7 @@ export default function Dashboard() {
         .slice(-10)
         .map(m => ({ sender: m.sender, text: m.text }))
 
-      const res = await fetch("http://localhost:5000/api/chat", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: currentInput, context, history }),
@@ -659,7 +653,7 @@ export default function Dashboard() {
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              onKeyPress={(e) => { if (e.key === "Enter") handleSendMessage(); }}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSendMessage(); }}
               placeholder="Ketik pesan..."
               className="flex-1 text-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-100"
               style={{ backgroundColor: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '10px' }}

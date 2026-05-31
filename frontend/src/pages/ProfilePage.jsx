@@ -100,7 +100,7 @@ export default function ProfilePage() {
 
   const handleSaveAddress = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/update-address", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/update-address`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -155,7 +155,7 @@ export default function ProfilePage() {
         updateData.photo = editProfile.photo;
       }
 
-      const response = await fetch("http://localhost:5000/api/auth/update-profile", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/update-profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
