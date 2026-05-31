@@ -4,6 +4,7 @@ import authRoutes from "./routes/authRoutes.js";
 import assessmentRoutes from "./routes/assessmentRoutes.js";
 import helloRoutes from "./routes/hello.js";
 import courseRoutes from "./routes/courseRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 
 const app = express();
 
@@ -15,5 +16,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/assessment", assessmentRoutes);
 app.use("/api", helloRoutes);
 app.use("/api", courseRoutes);
+app.use("/api", chatRoutes);
 
 export default app;
