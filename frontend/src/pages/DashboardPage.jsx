@@ -559,66 +559,63 @@ export default function Dashboard() {
       {/* Chat Window */}
       {chatOpen && (
         <div
-          className="fixed flex flex-col z-50 overflow-hidden rounded-2xl shadow-2xl"
+          className="fixed flex flex-col z-50 overflow-hidden bg-white"
           style={chatExpanded
-            ? { bottom: '1.5rem', right: '1.5rem', width: '680px', height: '80vh', border: '1px solid #CCD8E6' }
-            : { bottom: '1.5rem', right: '1.5rem', width: '380px', height: '520px', border: '1px solid #CCD8E6' }
+            ? { bottom: '1.5rem', right: '1.5rem', width: '640px', height: '78vh', borderRadius: '16px', boxShadow: '0 8px 32px rgba(35,59,94,0.15)', border: '1px solid #e5e7eb' }
+            : { bottom: '1.5rem', right: '1.5rem', width: '360px', height: '500px', borderRadius: '16px', boxShadow: '0 8px 32px rgba(35,59,94,0.15)', border: '1px solid #e5e7eb' }
           }
         >
           {/* Header */}
-          <div className="flex justify-between items-center px-4 py-3 flex-shrink-0" style={{ backgroundColor: '#233B5E' }}>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <FiMessageCircle size={16} className="text-white" />
+          <div className="flex justify-between items-center px-4 py-3 flex-shrink-0 border-b border-gray-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                style={{ backgroundColor: '#233B5E' }}>
+                AI
               </div>
-              <div>
-                <p className="text-white font-semibold text-sm leading-tight">AI Assistant</p>
-                <p className="text-white/60 text-xs leading-tight">Powered by Gemini</p>
-              </div>
+              <span className="font-semibold text-sm" style={{ color: '#233B5E' }}>AI Assistant</span>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
               <button
                 onClick={() => setChatExpanded(!chatExpanded)}
-                className="text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-colors"
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
                 title={chatExpanded ? "Perkecil" : "Perbesar"}
               >
-                {chatExpanded ? <FiMinimize2 size={16} /> : <FiMaximize2 size={16} />}
+                {chatExpanded ? <FiMinimize2 size={15} /> : <FiMaximize2 size={15} />}
               </button>
               <button
                 onClick={() => { setChatOpen(false); setChatExpanded(false); }}
-                className="text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-colors"
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
               >
-                <FiX size={16} />
+                <FiX size={15} />
               </button>
             </div>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: '#F7F6EE' }}>
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-white">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex items-end gap-2 ${message.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 {message.sender === "ai" && (
-                  <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mb-1"
+                  <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mb-1"
                     style={{ backgroundColor: '#233B5E' }}>
                     AI
                   </div>
                 )}
                 <div
-                  className={`px-3 py-2 rounded-2xl text-sm leading-relaxed shadow-sm ${
-                    message.sender === "user"
-                      ? "text-white rounded-br-sm"
-                      : "text-gray-800 rounded-bl-sm"
-                  }`}
+                  className="text-sm leading-relaxed"
                   style={{
                     maxWidth: '78%',
-                    backgroundColor: message.sender === "user" ? '#233B5E' : '#ffffff',
+                    padding: '8px 12px',
+                    borderRadius: message.sender === "user" ? '14px 14px 3px 14px' : '14px 14px 14px 3px',
+                    backgroundColor: message.sender === "user" ? '#233B5E' : '#F3F4F6',
+                    color: message.sender === "user" ? '#ffffff' : '#1f2937',
                   }}
                 >
                   {message.typing ? (
-                    <span className="flex gap-1 items-center h-4">
+                    <span className="flex gap-1 items-center" style={{ height: '18px' }}>
                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -631,7 +628,7 @@ export default function Dashboard() {
                           .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
                           .replace(/\*(.+?)\*/g, "<em>$1</em>")
                       }} />
-                      <span className={`text-xs mt-1 block ${message.sender === "user" ? "text-white/50" : "text-gray-400"}`}>
+                      <span className="text-xs mt-1 block" style={{ opacity: 0.5 }}>
                         {message.timestamp.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </>
@@ -643,23 +640,23 @@ export default function Dashboard() {
           </div>
 
           {/* Input Area */}
-          <div className="flex-shrink-0 p-3 flex gap-2 items-center bg-white border-t" style={{ borderColor: '#CCD8E6' }}>
+          <div className="flex-shrink-0 px-3 py-3 bg-white border-t border-gray-100 flex gap-2 items-center">
             <input
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyPress={(e) => { if (e.key === "Enter") handleSendMessage(); }}
               placeholder="Ketik pesan..."
-              className="flex-1 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2"
-              style={{ backgroundColor: '#F7F6EE', border: '1px solid #CCD8E6', focusRingColor: '#233B5E' }}
+              className="flex-1 text-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              style={{ backgroundColor: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '10px' }}
             />
             <button
               onClick={handleSendMessage}
               disabled={chatInput.trim() === ""}
-              className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white transition-all disabled:opacity-40 hover:opacity-90"
+              className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-white transition-all disabled:opacity-30 hover:opacity-85 active:scale-95"
               style={{ backgroundColor: '#233B5E' }}
             >
-              <FiSend size={15} />
+              <FiSend size={14} />
             </button>
           </div>
         </div>
