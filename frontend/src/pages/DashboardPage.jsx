@@ -35,6 +35,7 @@ export default function Dashboard() {
     },
   ]);
   const [chatInput, setChatInput] = useState("");
+  const [chatSending, setChatSending] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -121,7 +122,8 @@ export default function Dashboard() {
   };
 
   const handleSendMessage = async () => {
-    if (chatInput.trim() === "") return;
+    if (chatInput.trim() === "" || chatSending) return;
+    setChatSending(true);
 
     const userMessage = {
       id: Date.now(),
@@ -202,6 +204,8 @@ export default function Dashboard() {
         sender: "ai",
         timestamp: new Date(),
       }));
+    } finally {
+      setChatSending(false);
     }
   };
 
@@ -660,11 +664,15 @@ export default function Dashboard() {
             />
             <button
               onClick={handleSendMessage}
-              disabled={chatInput.trim() === ""}
+              disabled={chatInput.trim() === "" || chatSending}
               className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-white transition-all disabled:opacity-30 hover:opacity-85 active:scale-95"
               style={{ backgroundColor: '#233B5E' }}
             >
-              <FiSend size={14} />
+              {chatSending ? (
+                <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              ) : (
+                <FiSend size={14} />
+              )}
             </button>
           </div>
         </div>

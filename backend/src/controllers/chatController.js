@@ -1,4 +1,4 @@
-const GEMINI_MODEL = "gemini-flash-latest"
+const GEMINI_MODEL = "gemini-1.5-flash"
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://localhost:8000"
 
