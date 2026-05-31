@@ -92,29 +92,29 @@ export default function AssessmentPage() {
   const question = questions[currentQuestion]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 py-12 px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 py-6 px-4 sm:py-12 sm:px-6">
       <div className="w-full max-w-2xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Restart</h1>
-          <p className="text-slate-600">Penilaian Kesesuaian Karir</p>
+        <div className="text-center mb-5 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-1">Restart</h1>
+          <p className="text-sm sm:text-base text-slate-600">Penilaian Kesesuaian Karir</p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-slate-100">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 border border-slate-100">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
               {error}
             </div>
           )}
 
           {/* Progress Bar */}
-          <div className="mb-8">
+          <div className="mb-5 sm:mb-8">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-slate-600">
+              <span className="text-xs sm:text-sm font-medium text-slate-600">
                 Pertanyaan {currentQuestion + 1} dari {questions.length}
               </span>
-              <span className="text-sm font-medium text-slate-600">
+              <span className="text-xs sm:text-sm font-medium text-slate-600">
                 {Math.round(progress)}%
               </span>
             </div>
@@ -128,16 +128,16 @@ export default function AssessmentPage() {
 
           {/* Question Category */}
           {question && (
-            <div className="mb-6">
-              <span className="inline-block px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-medium mb-4">
+            <div className="mb-4 sm:mb-6">
+              <span className="inline-block px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-medium">
                 {question.label && <span className="font-semibold">{question.label} • </span>}
                 {question.category === 'physical'
-                  ? 'Kategori Fisik & Motorik'
+                  ? 'Fisik & Motorik'
                   : question.category === 'communication'
-                  ? 'Kategori Komunikasi & Sosial'
+                  ? 'Komunikasi & Sosial'
                   : question.category === 'problem_solving'
-                  ? 'Kategori Pemecahan Masalah & Teknis'
-                  : 'Kategori Tipe Kepribadian'}
+                  ? 'Pemecahan Masalah'
+                  : 'Tipe Kepribadian'}
               </span>
             </div>
           )}
@@ -145,26 +145,20 @@ export default function AssessmentPage() {
           <form onSubmit={handleSubmit}>
             {/* Question */}
             {question && (
-              <div className="mb-8">
-                <h2 className="text-lg font-semibold text-slate-900 mb-6">
+              <div className="mb-5 sm:mb-8">
+                <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-4 sm:mb-6 leading-snug">
                   {question.question}
                 </h2>
 
                 {/* Rating Scale */}
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {[1, 2, 3, 4, 5].map((value) => (
                     <label
                       key={value}
-                      className="flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-400 transition"
+                      className="flex items-center p-3 sm:p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-400 transition"
                       style={{
-                        borderColor:
-                          answers[question.id] === value
-                            ? '#1e293b'
-                            : undefined,
-                        backgroundColor:
-                          answers[question.id] === value
-                            ? '#f1f5f9'
-                            : undefined,
+                        borderColor: answers[question.id] === value ? '#1e293b' : undefined,
+                        backgroundColor: answers[question.id] === value ? '#f1f5f9' : undefined,
                       }}
                     >
                       <input
@@ -172,12 +166,10 @@ export default function AssessmentPage() {
                         name={`question-${question.id}`}
                         value={value}
                         checked={answers[question.id] === value}
-                        onChange={(e) =>
-                          handleAnswerChange(question.id, e.target.value)
-                        }
-                        className="w-4 h-4 text-slate-800"
+                        onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                        className="w-4 h-4 text-slate-800 flex-shrink-0"
                       />
-                      <span className="ml-3 text-slate-900 font-medium">
+                      <span className="ml-3 text-sm sm:text-base text-slate-900 font-medium">
                         {value === 1 && 'Sangat Tidak Setuju'}
                         {value === 2 && 'Tidak Setuju'}
                         {value === 3 && 'Netral'}
@@ -191,12 +183,12 @@ export default function AssessmentPage() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex gap-4 mt-8">
+            <div className="flex gap-3 mt-5 sm:mt-8">
               <button
                 type="button"
                 onClick={handlePrevious}
                 disabled={currentQuestion === 0}
-                className="flex-1 px-4 py-3 border-2 border-slate-300 text-slate-800 font-semibold rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="flex-1 px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-slate-300 text-slate-800 font-semibold rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 Sebelumnya
               </button>
@@ -205,7 +197,7 @@ export default function AssessmentPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 px-4 py-3 bg-slate-800 hover:bg-slate-900 disabled:bg-slate-400 text-white font-semibold rounded-lg transition"
+                  className="flex-1 px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-slate-800 hover:bg-slate-900 disabled:bg-slate-400 text-white font-semibold rounded-lg transition"
                 >
                   {submitting ? 'Memproses...' : 'Selesai'}
                 </button>
@@ -213,7 +205,7 @@ export default function AssessmentPage() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex-1 px-4 py-3 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-lg transition"
+                  className="flex-1 px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-lg transition"
                 >
                   Berikutnya
                 </button>

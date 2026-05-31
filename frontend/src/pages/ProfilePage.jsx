@@ -230,27 +230,27 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
         {user && (
           <>
             {/* Profile Card */}
-            <div className="bg-white rounded-lg border p-6 sm:p-8 mb-6" style={{borderColor: '#CCD8E6'}}>
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden" style={{backgroundColor: '#233B5E'}}>
+            <div className="bg-white rounded-lg border p-4 sm:p-8 mb-4 sm:mb-6" style={{borderColor: '#CCD8E6'}}>
+              <div className="flex items-start justify-between mb-4 sm:mb-6">
+                <div className="flex items-start gap-3 sm:gap-6">
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden" style={{backgroundColor: '#233B5E'}}>
                     {user.photo ? (
                       <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-3xl sm:text-4xl font-bold text-white">
+                      <span className="text-2xl sm:text-4xl font-bold text-white">
                         {user.name?.charAt(0).toUpperCase()}
                       </span>
                     )}
                   </div>
                   <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold" style={{color: '#233B5E'}}>
+                    <h2 className="text-xl sm:text-3xl font-bold" style={{color: '#233B5E'}}>
                       {user.name}
                     </h2>
-                    <p className="text-sm mt-1 capitalize" style={{color: '#7D8293'}}>
+                    <p className="text-xs sm:text-sm mt-1 capitalize" style={{color: '#7D8293'}}>
                       {user.role || "Peserta"}
                     </p>
                   </div>
@@ -268,7 +268,7 @@ export default function ProfilePage() {
               </div>
 
               {/* User Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-6" style={{borderColor: '#CCD8E6'}}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 border-t pt-4 sm:pt-6" style={{borderColor: '#CCD8E6'}}>
                 <div className="flex items-start gap-3">
                   <FiMail className="mt-1 flex-shrink-0" size={20} style={{color: '#233B5E'}} />
                   <div>
@@ -323,8 +323,8 @@ export default function ProfilePage() {
 
             {/* Edit Profile Modal */}
             {isEditingProfile && (
-              <div className="bg-white rounded-lg border p-6 sm:p-8 mb-6" style={{borderColor: '#CCD8E6'}}>
-                <div className="flex items-center justify-between mb-6">
+              <div className="bg-white rounded-lg border p-4 sm:p-8 mb-4 sm:mb-6" style={{borderColor: '#CCD8E6'}}>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
                   <h3 className="text-lg font-bold" style={{color: '#233B5E'}}>Edit Profil</h3>
                   <button
                     onClick={() => {
