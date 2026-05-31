@@ -45,6 +45,21 @@ export const chat = async (req, res) => {
       if (context.physicalScore)
         lines.push(`Skor assessment — Fisik: ${context.physicalScore}, Komunikasi: ${context.communicationScore}, Problem Solving: ${context.problemSolvingScore}, Kepribadian: ${context.personalityScore} (skala 1–5).`)
 
+      if (context.enrolledCourses?.length > 0) {
+        const courseList = context.enrolledCourses.map(c =>
+          `"${c.title}" (${c.category}, progress ${c.progress}%${c.completed ? ', selesai' : ''})`
+        ).join("; ")
+        lines.push(`Kursus yang sedang diikuti: ${courseList}.`)
+      } else {
+        lines.push(`Pengguna belum mengikuti kursus apapun.`)
+      }
+
+      if (context.stats)
+        lines.push(`Statistik belajar — Total kursus diikuti: ${context.stats.totalEnrolled}, selesai: ${context.stats.completed}, rata-rata progress: ${context.stats.avgProgress}%.`)
+
+      if (context.availableCoursesCount > 0)
+        lines.push(`Tersedia ${context.availableCoursesCount} kursus lain yang belum diikuti di platform.`)
+
       if (lines.length > 0)
         systemPrompt += `\n\nData pengguna dari aplikasi:\n${lines.join("\n")}`
     }

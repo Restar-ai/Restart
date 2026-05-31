@@ -149,6 +149,18 @@ export default function Dashboard() {
         communicationScore: assessmentResult?.communicationScore || null,
         problemSolvingScore: assessmentResult?.problemSolvingScore || null,
         personalityScore: assessmentResult?.personalityScore || null,
+        enrolledCourses: enrolledCourses.map(c => ({
+          title: c.title,
+          category: c.category,
+          progress: c.progress_percentage,
+          completed: !!c.completed_at,
+        })),
+        availableCoursesCount: availableCourses.length,
+        stats: stats ? {
+          totalEnrolled: stats.totalEnrolled,
+          completed: stats.completed,
+          avgProgress: stats.avgProgress,
+        } : null,
       };
 
       const res = await fetch("http://localhost:5000/api/chat", {
