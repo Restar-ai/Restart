@@ -81,6 +81,16 @@ export const chat = async (req, res) => {
       if (context.availableCoursesCount > 0)
         lines.push(`Tersedia ${context.availableCoursesCount} kursus lain yang belum diikuti di platform.`)
 
+      if (!context.hasAssessment)
+        lines.push(`Pengguna belum mengerjakan asesmen karier.`)
+
+      if (context.appPages) {
+        const pageList = Object.values(context.appPages)
+          .map(p => `"${p.label}" → ${p.path}`)
+          .join(", ")
+        lines.push(`Halaman aplikasi yang tersedia: ${pageList}. Jika pengguna bertanya cara mengakses fitur tertentu, sebutkan nama halamannya dan pathnya.`)
+      }
+
       if (lines.length > 0)
         systemPrompt += `\n\nData pengguna dari aplikasi:\n${lines.join("\n")}`
     }

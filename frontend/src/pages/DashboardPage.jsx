@@ -166,6 +166,13 @@ export default function Dashboard() {
           completed: stats.completed,
           avgProgress: stats.avgProgress,
         } : null,
+        appPages: {
+          dashboard: { label: "Dashboard / Kursus Saya", path: "/dashboard" },
+          assessment: { label: "Asesmen Karier", path: "/assessment" },
+          assessmentResult: { label: "Hasil Asesmen", path: "/assessment/result" },
+          profile: { label: "Profil Saya", path: "/profile" },
+        },
+        hasAssessment: !!assessmentResult,
       };
 
       // Send last 10 non-typing messages as history (exclude welcome message)
