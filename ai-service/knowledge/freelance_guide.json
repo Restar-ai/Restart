@@ -1,0 +1,42 @@
+[
+  {
+    "id": "apa_itu_freelance",
+    "title": "Apa Itu Freelance dan Wirausaha",
+    "content": "Freelance adalah bekerja secara mandiri tanpa ikatan kontrak tetap dengan satu perusahaan. Kamu menerima proyek dari berbagai klien dan dibayar per proyek atau per jam. Wirausaha adalah membangun bisnis sendiri. Keduanya cocok untuk mantan narapidana karena tidak memerlukan SKCK dan prosesnya lebih fleksibel. Profesi yang cocok untuk freelance dari platform RESTART: Fotografer, Desainer Grafis, Video Editor, Admin Media Sosial, Digital Marketer, dan Web Developer."
+  },
+  {
+    "id": "mulai_freelance",
+    "title": "Cara Memulai Freelance dari Nol",
+    "content": "Langkah memulai freelance: pertama kuasai satu skill dengan baik, buat portofolio 3-5 karya terbaik meski proyek fiktif/latihan, daftar di platform freelance (Fiverr, Fastwork, Projects.co.id, Sribulancer), buat profil profesional dengan foto dan deskripsi yang menarik, mulai dengan harga rendah untuk mendapat ulasan pertama, tingkatkan harga setelah punya 5-10 ulasan positif. Modal utama freelance adalah laptop/smartphone dan koneksi internet."
+  },
+  {
+    "id": "platform_freelance_indonesia",
+    "title": "Platform Freelance Terbaik di Indonesia",
+    "content": "Platform freelance untuk mencari klien: Fastwork.id (platform terbesar di Asia Tenggara, berbahasa Indonesia), Sribulancer (platform lokal Indonesia untuk berbagai jasa digital), Projects.co.id (cocok untuk proyek desain dan teknologi), Fiverr.com (platform internasional, pembayaran dalam USD), 99designs (khusus desain grafis), Upwork (untuk proyek menengah ke besar, bahasa Inggris). Mulailah dari Fastwork atau Sribulancer karena berbahasa Indonesia dan pasarnya lokal."
+  },
+  {
+    "id": "portofolio_freelance",
+    "title": "Membuat Portofolio untuk Freelance",
+    "content": "Portofolio adalah kumpulan karya terbaik yang membuktikan kemampuanmu. Cara membuat portofolio tanpa klien: kerjakan proyek latihan (desain logo fiktif, foto produk barang rumahan, video pendek, website sederhana), gunakan Canva untuk desain, Instagram untuk foto, YouTube atau TikTok untuk video. Simpan portofolio di Google Drive, Behance (untuk desain), atau GitHub (untuk web developer). Perbarui portofolio secara rutin dengan karya terbaru."
+  },
+  {
+    "id": "usaha_kuliner",
+    "title": "Memulai Usaha Kuliner Modal Kecil",
+    "content": "Usaha kuliner modal kecil cocok untuk yang memiliki skill memasak atau membuat minuman. Pilihan usaha: jualan kopi/minuman kekinian dari rumah (modal Rp 500.000 - Rp 2.000.000), jualan makanan via GoFood/GrabFood/ShopeeFood, catering kecil untuk acara RT/RW, atau booth di bazar/pasar malam. Langkah awal: tentukan menu andalan, hitung modal dan harga jual, buat akun media sosial untuk promosi, daftarkan ke aplikasi ojek online, dan minta testimoni dari pelanggan pertama."
+  },
+  {
+    "id": "usaha_jasa_digital",
+    "title": "Memulai Usaha Jasa Digital",
+    "content": "Jasa digital yang bisa dimulai dengan modal minim: jasa kelola media sosial UMKM (banyak usaha kecil butuh admin medsos tapi tidak mampu gaji karyawan tetap), jasa desain banner/konten (Canva cukup untuk awal), jasa edit video (CapCut gratis dan mudah dipelajari), jasa foto produk untuk marketplace, dan jasa pembuatan website sederhana. Cari klien pertama dari lingkungan sekitar: toko, warung, atau usaha keluarga yang butuh bantuan digital."
+  },
+  {
+    "id": "keuangan_freelance",
+    "title": "Mengelola Keuangan sebagai Freelancer",
+    "content": "Tips keuangan untuk freelancer: pisahkan rekening pribadi dan bisnis, catat semua pemasukan dan pengeluaran, sisihkan 20-30% penghasilan untuk pajak dan tabungan, buat dana darurat minimal 3 bulan pengeluaran, tetapkan tarif minimum yang tidak boleh dilanggar, buat kontrak tertulis sederhana untuk proyek besar, dan minta DP 50% sebelum mulai mengerjakan proyek baru. Konsistensi lebih penting dari besarnya penghasilan di awal."
+  },
+  {
+    "id": "barista_wirausaha",
+    "title": "Memulai Usaha Kopi Sendiri",
+    "content": "Bagi yang memiliki skill barista, membuka usaha kopi bisa dimulai dari skala kecil. Opsi usaha kopi: gerobak kopi keliling (modal Rp 3-5 juta), booth di kantin atau gedung perkantoran, kopi titipan di warung-warung, atau catering minuman untuk event. Modal utama: mesin espresso entry level atau alat manual brew (V60, aeropress), bahan baku kopi berkualitas, dan kemasan yang menarik. Mulai dengan 2-3 menu andalan, jangan terlalu banyak variasi di awal."
+  }
+]
