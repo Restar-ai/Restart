@@ -1,0 +1,42 @@
+[
+  {
+    "id": "cv_tips",
+    "title": "Cara Membuat CV yang Baik",
+    "content": "CV (Curriculum Vitae) adalah dokumen pertama yang dilihat perekrut. CV yang baik harus: singkat 1-2 halaman, mencantumkan nama dan kontak jelas, riwayat pendidikan, pengalaman kerja atau kegiatan relevan, dan skill yang dimiliki. Gunakan format yang rapi dan mudah dibaca. Hindari foto yang tidak profesional. Tulis dengan jujur."
+  },
+  {
+    "id": "cv_tanpa_pengalaman",
+    "title": "CV untuk Pemula Tanpa Pengalaman Kerja",
+    "content": "Jika belum punya pengalaman kerja formal, fokuskan CV pada: skill yang dikuasai (misalnya Excel, desain, memasak kopi), kursus atau pelatihan yang pernah diikuti, kegiatan sukarela atau proyek pribadi, dan sertifikat yang dimiliki. Buat portofolio sederhana sebagai bukti kemampuan nyata. Tulis 'Fresh Graduate' atau 'Career Starter' bukan membiarkan kosong."
+  },
+  {
+    "id": "interview_tips",
+    "title": "Tips Wawancara Kerja",
+    "content": "Persiapan wawancara kerja: datang 15 menit lebih awal, kenakan pakaian rapi dan sopan, pelajari profil perusahaan sebelumnya, siapkan jawaban untuk pertanyaan umum seperti 'ceritakan tentang diri kamu' dan 'apa kelebihan dan kekuranganmu'. Saat wawancara: kontak mata, berbicara jelas, jujur tentang kemampuan, tunjukkan antusias belajar. Setelah wawancara kirim pesan terima kasih via WhatsApp atau email."
+  },
+  {
+    "id": "interview_pertanyaan_masa_lalu",
+    "title": "Cara Menjawab Pertanyaan Masa Lalu saat Interview",
+    "content": "Jika ditanya tentang latar belakang atau gap pekerjaan, jawab dengan jujur namun positif. Fokuskan pada apa yang sudah dipelajari dan perubahan yang sudah dilakukan. Contoh: 'Saya pernah menghadapi masa sulit, tapi dari pengalaman itu saya belajar arti tanggung jawab dan sekarang saya lebih siap untuk berkontribusi.' Banyak perusahaan menghargai kejujuran dan pertumbuhan pribadi."
+  },
+  {
+    "id": "platform_loker",
+    "title": "Platform Mencari Kerja di Indonesia",
+    "content": "Platform lowongan kerja terpercaya di Indonesia: Jobstreet (jobstreet.co.id) untuk berbagai level, LinkedIn untuk jaringan profesional dan kerja kantoran, Glints (glints.com) khusus untuk karier muda dan tech, Kalibrr untuk fresh graduate, Indeed untuk semua jenis pekerjaan, Loker.id untuk lowongan lokal. Selain itu bisa cari lewat grup Facebook 'Loker [nama kota]', Instagram HR perusahaan, dan rekomendasi dari kenalan."
+  },
+  {
+    "id": "negosiasi_gaji",
+    "title": "Tips Negosiasi Gaji Pertama",
+    "content": "Saat negosiasi gaji: riset terlebih dahulu rata-rata gaji profesi tersebut di daerahmu, sebutkan angka yang sedikit lebih tinggi dari harapan agar ada ruang negosiasi, tunjukkan nilai yang kamu bawa (skill, pengalaman, sertifikat), jika gaji tidak bisa naik coba negosiasi benefit lain seperti transportasi atau uang makan. Untuk pekerjaan pertama, fokuslah pada pengalaman dan belajar, bukan hanya gaji."
+  },
+  {
+    "id": "surat_lamaran",
+    "title": "Cara Menulis Surat Lamaran Kerja",
+    "content": "Surat lamaran kerja yang baik terdiri dari: pembuka yang menyebutkan posisi yang dilamar dan dari mana tahu informasi lowongan, paragraf tengah yang menjelaskan kenapa kamu cocok untuk posisi tersebut dan skill yang relevan, penutup yang menyatakan antusias untuk diwawancarai. Panjang maksimal satu halaman. Gunakan bahasa formal tapi tidak kaku. Sesuaikan isi surat dengan setiap perusahaan yang dilamar."
+  },
+  {
+    "id": "persiapan_kerja_pertama",
+    "title": "Persiapan Sebelum Mulai Kerja Pertama",
+    "content": "Sebelum mulai bekerja pertama kali: siapkan dokumen penting (KTP, SKCK, ijazah, sertifikat), buka rekening bank jika belum punya, siapkan pakaian kerja yang layak, pelajari rute perjalanan ke kantor, tidur cukup sebelum hari pertama. Hari pertama: datang lebih awal, perkenalkan diri dengan sopan, dengarkan lebih banyak daripada bicara, catat hal penting, jangan malu bertanya kepada rekan kerja."
+  }
+]
