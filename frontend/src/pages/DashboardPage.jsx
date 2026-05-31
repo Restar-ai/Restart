@@ -13,6 +13,8 @@ import {
   FiX,
   FiSend,
   FiUser,
+  FiMaximize2,
+  FiMinimize2,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
 import * as assessmentApi from "../api/assessmentApi";
@@ -29,6 +31,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("enrolled");
   const [assessmentResult, setAssessmentResult] = useState(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [chatExpanded, setChatExpanded] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -522,16 +525,31 @@ export default function Dashboard() {
 
       {/* Chat Window */}
       {chatOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-40 overflow-hidden">
+        <div
+          className="fixed bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-40 overflow-hidden transition-all duration-300"
+          style={chatExpanded
+            ? { bottom: '1.5rem', right: '1.5rem', width: '680px', height: '80vh' }
+            : { bottom: '6rem', right: '1.5rem', width: '24rem', height: '24rem' }
+          }
+        >
           {/* Chat Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex justify-between items-center flex-shrink-0">
             <h3 className="font-semibold">AI Assistant</h3>
-            <button
-              onClick={() => setChatOpen(false)}
-              className="hover:bg-blue-800 p-1 rounded transition-colors"
-            >
-              <FiX size={20} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setChatExpanded(!chatExpanded)}
+                className="hover:bg-blue-800 p-1 rounded transition-colors"
+                title={chatExpanded ? "Perkecil" : "Perbesar"}
+              >
+                {chatExpanded ? <FiMinimize2 size={18} /> : <FiMaximize2 size={18} />}
+              </button>
+              <button
+                onClick={() => { setChatOpen(false); setChatExpanded(false); }}
+                className="hover:bg-blue-800 p-1 rounded transition-colors"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
           </div>
 
           {/* Messages Area */}
