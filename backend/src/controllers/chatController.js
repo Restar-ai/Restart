@@ -78,8 +78,18 @@ export const chat = async (req, res) => {
       if (context.stats)
         lines.push(`Statistik belajar — Total kursus diikuti: ${context.stats.totalEnrolled}, selesai: ${context.stats.completed}, rata-rata progress: ${context.stats.avgProgress}%.`)
 
-      if (context.availableCoursesCount > 0)
+      if (context.userEducation)
+        lines.push(`Pendidikan terakhir: ${context.userEducation}.`)
+
+      if (context.userGender)
+        lines.push(`Jenis kelamin: ${context.userGender === 'male' ? 'Laki-laki' : context.userGender === 'female' ? 'Perempuan' : context.userGender}.`)
+
+      if (context.availableCoursesList?.length > 0) {
+        const list = context.availableCoursesList.map(c => `"${c.title}" (${c.category}, ${c.durationHours} jam)`).join("; ")
+        lines.push(`Kursus tersedia yang belum diikuti: ${list}.`)
+      } else if (context.availableCoursesCount > 0) {
         lines.push(`Tersedia ${context.availableCoursesCount} kursus lain yang belum diikuti di platform.`)
+      }
 
       if (!context.hasAssessment)
         lines.push(`Pengguna belum mengerjakan asesmen karier.`)

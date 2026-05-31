@@ -166,6 +166,13 @@ export default function Dashboard() {
           completed: stats.completed,
           avgProgress: stats.avgProgress,
         } : null,
+        availableCoursesList: availableCourses.map(c => ({
+          title: c.title,
+          category: c.category,
+          durationHours: c.duration_hours,
+        })),
+        userEducation: user?.education || null,
+        userGender: user?.gender || null,
         appPages: {
           dashboard: { label: "Dashboard / Kursus Saya", path: "/dashboard" },
           assessment: { label: "Asesmen Karier", path: "/assessment" },
