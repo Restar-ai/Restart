@@ -268,7 +268,7 @@ export default function Dashboard() {
                 {assessmentResult.recommendedJobs && assessmentResult.recommendedJobs.map((job, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-sm text-gray-700 bg-blue-50 px-3 py-2 rounded">
                     <span className="text-blue-600 font-semibold">{idx + 1}.</span>
-                    <span>{job}</span>
+                    <span>{typeof job === 'object' ? job.profession : job}</span>
                   </div>
                 ))}
               </div>
