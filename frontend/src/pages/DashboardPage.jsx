@@ -163,10 +163,16 @@ export default function Dashboard() {
         } : null,
       };
 
+      // Send last 10 non-typing messages as history (exclude welcome message)
+      const history = messages
+        .filter(m => !m.typing && m.id !== 1)
+        .slice(-10)
+        .map(m => ({ sender: m.sender, text: m.text }))
+
       const res = await fetch("http://localhost:5000/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: currentInput, context }),
+        body: JSON.stringify({ message: currentInput, context, history }),
       });
 
       const data = await res.json();
@@ -587,7 +593,12 @@ export default function Dashboard() {
                       : "bg-gray-100 text-gray-900 rounded-bl-none"
                   }`}
                 >
-                  <p className="text-sm">{message.text}</p>
+                  <p className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{
+                    __html: message.text
+                      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+                  }} />
                   <span className="text-xs opacity-70 mt-1 block">
                     {message.timestamp.toLocaleTimeString("id-ID", {
                       hour: "2-digit",
