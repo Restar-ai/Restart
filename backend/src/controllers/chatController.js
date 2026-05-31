@@ -1,5 +1,6 @@
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-const GROQ_MODEL = "llama-3.3-70b-versatile"
+const GEMINI_MODEL = "gemini-flash-latest"
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://localhost:8000"
 
 const SYSTEM_PROMPT = `Kamu adalah AI Career Assistant untuk platform RESTART — platform karier untuk mantan narapidana di Indonesia yang membantu mereka memulai kembali kehidupan melalui pelatihan dan pengembangan karier.
 
@@ -22,13 +23,33 @@ export const chat = async (req, res) => {
       return res.status(400).json({ message: "Pesan tidak boleh kosong" })
     }
 
-    const apiKey = process.env.GROQ_API_KEY
+    const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) {
       return res.status(503).json({ message: "Chat AI belum dikonfigurasi" })
     }
 
-    // Build system prompt with user context
-    let systemPrompt = SYSTEM_PROMPT
+    // Retrieve relevant knowledge from RAG
+    let ragContext = ""
+    try {
+      const ragRes = await fetch(`${AI_SERVICE_URL}/retrieve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: message, n_results: 4 }),
+        signal: AbortSignal.timeout(5000)
+      })
+      if (ragRes.ok) {
+        const ragData = await ragRes.json()
+        if (ragData.documents?.length > 0) {
+          ragContext = "\n\nInformasi relevan dari knowledge base RESTART:\n" +
+            ragData.documents.map((d, i) => `[${i + 1}] ${d}`).join("\n")
+        }
+      }
+    } catch {
+      // RAG tidak tersedia, lanjut tanpa konteks tambahan
+    }
+
+    // Build system prompt
+    let systemPrompt = SYSTEM_PROMPT + ragContext
 
     if (context) {
       const lines = []
@@ -64,32 +85,26 @@ export const chat = async (req, res) => {
         systemPrompt += `\n\nData pengguna dari aplikasi:\n${lines.join("\n")}`
     }
 
-    const response = await fetch(GROQ_API_URL, {
+    // Gemini API call
+    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: message }
-        ],
-        max_tokens: 300,
-        temperature: 0.7
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: message }] }],
+        generationConfig: { maxOutputTokens: 500, temperature: 0.7 }
       }),
-      signal: AbortSignal.timeout(15000)
+      signal: AbortSignal.timeout(20000)
     })
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}))
-      console.error("Groq API error:", err)
+      console.error("Gemini API error:", err)
       return res.status(502).json({ message: "Gagal menghubungi AI" })
     }
 
     const data = await response.json()
-    const reply = data.choices?.[0]?.message?.content || "Maaf, saya tidak bisa menjawab saat ini."
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak bisa menjawab saat ini."
 
     res.json({ reply })
   } catch (error) {
