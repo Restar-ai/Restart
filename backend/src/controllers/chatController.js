@@ -85,14 +85,24 @@ export const chat = async (req, res) => {
         systemPrompt += `\n\nData pengguna dari aplikasi:\n${lines.join("\n")}`
     }
 
+    // Build conversation history for multi-turn context
+    const history = Array.isArray(req.body.history) ? req.body.history : []
+    const contents = [
+      ...history.map(m => ({
+        role: m.sender === "user" ? "user" : "model",
+        parts: [{ text: m.text }]
+      })),
+      { role: "user", parts: [{ text: message }] }
+    ]
+
     // Gemini API call
     const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: "user", parts: [{ text: message }] }],
-        generationConfig: { maxOutputTokens: 500, temperature: 0.7 }
+        contents,
+        generationConfig: { maxOutputTokens: 1500, temperature: 0.7 }
       }),
       signal: AbortSignal.timeout(20000)
     })
