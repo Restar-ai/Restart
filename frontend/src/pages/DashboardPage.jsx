@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiLogOut,
@@ -41,6 +41,11 @@ export default function Dashboard() {
     },
   ]);
   const [chatInput, setChatInput] = useState("");
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -540,94 +545,121 @@ export default function Dashboard() {
       </div>
 
       {/* Floating Chat Button */}
-      <button
-        onClick={() => setChatOpen(!chatOpen)}
-        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all hover:scale-110 z-40"
-        title="Buka Chat AI"
-      >
-        {chatOpen ? <FiX size={24} /> : <FiMessageCircle size={24} />}
-      </button>
+      {!chatOpen && (
+        <button
+          onClick={() => setChatOpen(true)}
+          className="fixed bottom-6 right-6 text-white p-4 rounded-full shadow-xl transition-all hover:scale-105 z-40 flex items-center gap-2"
+          style={{ backgroundColor: '#233B5E' }}
+          title="Buka AI Assistant"
+        >
+          <FiMessageCircle size={22} />
+        </button>
+      )}
 
       {/* Chat Window */}
       {chatOpen && (
         <div
-          className="fixed bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-40 overflow-hidden transition-all duration-300"
+          className="fixed flex flex-col z-50 overflow-hidden rounded-2xl shadow-2xl"
           style={chatExpanded
-            ? { bottom: '1.5rem', right: '1.5rem', width: '680px', height: '80vh' }
-            : { bottom: '6rem', right: '1.5rem', width: '24rem', height: '24rem' }
+            ? { bottom: '1.5rem', right: '1.5rem', width: '680px', height: '80vh', border: '1px solid #CCD8E6' }
+            : { bottom: '1.5rem', right: '1.5rem', width: '380px', height: '520px', border: '1px solid #CCD8E6' }
           }
         >
-          {/* Chat Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex justify-between items-center flex-shrink-0">
-            <h3 className="font-semibold">AI Assistant</h3>
+          {/* Header */}
+          <div className="flex justify-between items-center px-4 py-3 flex-shrink-0" style={{ backgroundColor: '#233B5E' }}>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                <FiMessageCircle size={16} className="text-white" />
+              </div>
+              <div>
+                <p className="text-white font-semibold text-sm leading-tight">AI Assistant</p>
+                <p className="text-white/60 text-xs leading-tight">Powered by Gemini</p>
+              </div>
+            </div>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setChatExpanded(!chatExpanded)}
-                className="hover:bg-blue-800 p-1 rounded transition-colors"
+                className="text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-colors"
                 title={chatExpanded ? "Perkecil" : "Perbesar"}
               >
-                {chatExpanded ? <FiMinimize2 size={18} /> : <FiMaximize2 size={18} />}
+                {chatExpanded ? <FiMinimize2 size={16} /> : <FiMaximize2 size={16} />}
               </button>
               <button
                 onClick={() => { setChatOpen(false); setChatExpanded(false); }}
-                className="hover:bg-blue-800 p-1 rounded transition-colors"
+                className="text-white/70 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-colors"
               >
-                <FiX size={20} />
+                <FiX size={16} />
               </button>
             </div>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: '#F7F6EE' }}>
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${
-                  message.sender === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex items-end gap-2 ${message.sender === "user" ? "justify-end" : "justify-start"}`}
               >
+                {message.sender === "ai" && (
+                  <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mb-1"
+                    style={{ backgroundColor: '#233B5E' }}>
+                    AI
+                  </div>
+                )}
                 <div
-                  className={`max-w-xs px-4 py-2 rounded-lg ${
+                  className={`px-3 py-2 rounded-2xl text-sm leading-relaxed shadow-sm ${
                     message.sender === "user"
-                      ? "bg-blue-600 text-white rounded-br-none"
-                      : "bg-gray-100 text-gray-900 rounded-bl-none"
+                      ? "text-white rounded-br-sm"
+                      : "text-gray-800 rounded-bl-sm"
                   }`}
+                  style={{
+                    maxWidth: '78%',
+                    backgroundColor: message.sender === "user" ? '#233B5E' : '#ffffff',
+                  }}
                 >
-                  <p className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{
-                    __html: message.text
-                      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-                      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-                      .replace(/\*(.+?)\*/g, "<em>$1</em>")
-                  }} />
-                  <span className="text-xs opacity-70 mt-1 block">
-                    {message.timestamp.toLocaleTimeString("id-ID", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+                  {message.typing ? (
+                    <span className="flex gap-1 items-center h-4">
+                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </span>
+                  ) : (
+                    <>
+                      <p className="whitespace-pre-wrap" dangerouslySetInnerHTML={{
+                        __html: message.text
+                          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                          .replace(/\*(.+?)\*/g, "<em>$1</em>")
+                      }} />
+                      <span className={`text-xs mt-1 block ${message.sender === "user" ? "text-white/50" : "text-gray-400"}`}>
+                        {message.timestamp.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-gray-200 p-3 flex gap-2">
+          <div className="flex-shrink-0 p-3 flex gap-2 items-center bg-white border-t" style={{ borderColor: '#CCD8E6' }}>
             <input
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === "Enter") handleSendMessage();
-              }}
+              onKeyPress={(e) => { if (e.key === "Enter") handleSendMessage(); }}
               placeholder="Ketik pesan..."
-              className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="flex-1 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2"
+              style={{ backgroundColor: '#F7F6EE', border: '1px solid #CCD8E6', focusRingColor: '#233B5E' }}
             />
             <button
               onClick={handleSendMessage}
-              className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded transition-colors"
-              title="Kirim pesan"
+              disabled={chatInput.trim() === ""}
+              className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white transition-all disabled:opacity-40 hover:opacity-90"
+              style={{ backgroundColor: '#233B5E' }}
             >
-              <FiSend size={18} />
+              <FiSend size={15} />
             </button>
           </div>
         </div>
