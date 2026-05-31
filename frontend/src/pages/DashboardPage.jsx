@@ -560,21 +560,41 @@ export default function Dashboard() {
       {!chatOpen && (
         <button
           onClick={() => setChatOpen(true)}
-          className="fixed bottom-6 right-6 text-white p-4 rounded-full shadow-xl transition-all hover:scale-105 z-40 flex items-center gap-2"
+          className="fixed bottom-5 right-5 text-white p-3.5 rounded-full shadow-xl transition-all hover:scale-105 z-40"
           style={{ backgroundColor: '#233B5E' }}
           title="Buka AI Assistant"
         >
-          <FiMessageCircle size={22} />
+          <FiMessageCircle size={20} />
         </button>
       )}
 
-      {/* Chat Window */}
+      {/* Chat Window — full screen on mobile, floating on desktop */}
       {chatOpen && (
         <div
           className="fixed flex flex-col z-50 overflow-hidden bg-white"
           style={chatExpanded
-            ? { bottom: '1.5rem', right: '1.5rem', width: '640px', height: '78vh', borderRadius: '16px', boxShadow: '0 8px 32px rgba(35,59,94,0.15)', border: '1px solid #e5e7eb' }
-            : { bottom: '1.5rem', right: '1.5rem', width: '360px', height: '500px', borderRadius: '16px', boxShadow: '0 8px 32px rgba(35,59,94,0.15)', border: '1px solid #e5e7eb' }
+            ? {
+                bottom: '1.5rem', right: '1.5rem',
+                width: '640px', height: '78vh',
+                borderRadius: '16px',
+                boxShadow: '0 8px 32px rgba(35,59,94,0.15)',
+                border: '1px solid #e5e7eb',
+              }
+            : window.innerWidth < 640
+            ? {
+                bottom: 0, right: 0, left: 0,
+                height: '85vh',
+                borderRadius: '16px 16px 0 0',
+                boxShadow: '0 -4px 24px rgba(35,59,94,0.12)',
+                border: '1px solid #e5e7eb',
+              }
+            : {
+                bottom: '1.5rem', right: '1.5rem',
+                width: '360px', height: '500px',
+                borderRadius: '16px',
+                boxShadow: '0 8px 32px rgba(35,59,94,0.15)',
+                border: '1px solid #e5e7eb',
+              }
           }
         >
           {/* Header */}
@@ -587,13 +607,15 @@ export default function Dashboard() {
               <span className="font-semibold text-sm" style={{ color: '#233B5E' }}>AI Assistant</span>
             </div>
             <div className="flex items-center gap-0.5">
-              <button
-                onClick={() => setChatExpanded(!chatExpanded)}
-                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
-                title={chatExpanded ? "Perkecil" : "Perbesar"}
-              >
-                {chatExpanded ? <FiMinimize2 size={15} /> : <FiMaximize2 size={15} />}
-              </button>
+              {window.innerWidth >= 640 && (
+                <button
+                  onClick={() => setChatExpanded(!chatExpanded)}
+                  className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
+                  title={chatExpanded ? "Perkecil" : "Perbesar"}
+                >
+                  {chatExpanded ? <FiMinimize2 size={15} /> : <FiMaximize2 size={15} />}
+                </button>
+              )}
               <button
                 onClick={() => { setChatOpen(false); setChatExpanded(false); }}
                 className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-lg transition-colors"
