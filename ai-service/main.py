@@ -5,6 +5,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+from contextlib import asynccontextmanager
+from rag import load_knowledge, retrieve
 
 # Must define custom layer BEFORE loading model
 class SkillEmbeddingLayer(tf.keras.layers.Layer):
@@ -40,7 +42,29 @@ class SkillEmbeddingLayer(tf.keras.layers.Layer):
         return config
 
 
-app = FastAPI(title="RESTART Career AI Service")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load ML model
+    global keras_model, mean_arr, scale_arr, profession_classes
+    with open("model/feature_scaler.json") as f:
+        scaler = json.load(f)
+    with open("model/profession_classes.json") as f:
+        profession_classes = json.load(f)
+    mean_arr = np.array(scaler["mean"])
+    scale_arr = np.array(scaler["scale"])
+    keras_model = tf.keras.models.load_model(
+        "model/profession_recommendation_model.keras",
+        custom_objects={"SkillEmbeddingLayer": SkillEmbeddingLayer}
+    )
+    print("Keras model loaded.")
+
+    # Load RAG knowledge base
+    load_knowledge()
+
+    yield
+
+
+app = FastAPI(title="RESTART Career AI Service", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,31 +74,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load artifacts at startup
-with open("model/feature_scaler.json") as f:
-    scaler = json.load(f)
-
-with open("model/profession_classes.json") as f:
-    profession_classes = json.load(f)
-
-mean_arr = np.array(scaler["mean"])
-scale_arr = np.array(scaler["scale"])
-
-model = tf.keras.models.load_model(
-    "model/profession_recommendation_model.keras",
-    custom_objects={"SkillEmbeddingLayer": SkillEmbeddingLayer}
-)
-
-print("Model loaded successfully")
+keras_model = None
+mean_arr = None
+scale_arr = None
+profession_classes = None
 
 
 class PredictRequest(BaseModel):
     features: List[float]
 
 
+class RetrieveRequest(BaseModel):
+    query: str
+    n_results: int = 4
+
+
 @app.get("/health")
 def health():
-    return {"status": "ok", "model_loaded": True}
+    return {"status": "ok", "model_loaded": keras_model is not None}
 
 
 @app.post("/predict")
@@ -86,7 +103,7 @@ def predict(request: PredictRequest):
     normalized = (raw - mean_arr) / scale_arr
     normalized = normalized.reshape(1, -1)
 
-    logits = model.predict(normalized, verbose=0)
+    logits = keras_model.predict(normalized, verbose=0)
     probabilities = tf.nn.softmax(logits[0]).numpy()
 
     top3_indices = np.argsort(probabilities)[::-1][:3]
@@ -100,3 +117,9 @@ def predict(request: PredictRequest):
     ]
 
     return {"success": True, "predictions": predictions}
+
+
+@app.post("/retrieve")
+def retrieve_context(request: RetrieveRequest):
+    docs = retrieve(request.query, request.n_results)
+    return {"documents": docs}
