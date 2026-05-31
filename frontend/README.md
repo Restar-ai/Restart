@@ -25,14 +25,20 @@ frontend/
     └── pages/          # Page-level components
         ├── Login.jsx
         ├── Register.jsx
-        ├── DashboardPage.jsx
+        ├── DashboardPage.jsx        # Main dashboard with AI chat window
         ├── AssessmentPage.jsx
-        ├── AssessmentResultPage.jsx
+        ├── AssessmentResultPage.jsx # Shows top-3 professions with confidence bars
         ├── CoursePage.jsx
         ├── ProfilePage.jsx
         ├── ParticipantProfile.jsx
         └── TrainerDashboard.jsx
 ```
+
+## Key Pages
+
+**DashboardPage** — Main participant page. Shows assessment results, enrolled courses, and an AI career assistant chat window. The chat window can be expanded/collapsed and sends full user context (assessment results, scores, course progress) to the backend with each message.
+
+**AssessmentResultPage** — Displays top-3 ML-recommended professions with rank badges (1st/2nd/3rd), confidence percentage bars, and a "Powered by AI" badge.
 
 ## API Pattern
 
@@ -46,7 +52,7 @@ src/api/assessmentApi.js  → /api/assessment/*
 src/api/courseApi.js      → /api/courses/* and /api/enroll, etc.
 ```
 
-Page and component code calls feature API modules — never `fetch` directly.
+The chat AI (`POST /api/chat`) is called directly from `DashboardPage.jsx` using the native `fetch` API.
 
 ## Styling
 
