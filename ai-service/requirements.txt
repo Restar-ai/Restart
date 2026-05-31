@@ -2,3 +2,5 @@ fastapi
 uvicorn[standard]
 tensorflow
 numpy
+sentence-transformers
+chromadb
