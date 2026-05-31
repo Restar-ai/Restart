@@ -1,5 +1,5 @@
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-const GROQ_MODEL = "llama-3.1-8b-instant"
+const GROQ_MODEL = "llama-3.3-70b-versatile"
 
 const SYSTEM_PROMPT = `Kamu adalah AI Career Assistant untuk platform RESTART — platform karier untuk mantan narapidana di Indonesia yang membantu mereka memulai kembali kehidupan melalui pelatihan dan pengembangan karier.
 
