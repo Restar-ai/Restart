@@ -140,9 +140,16 @@ export default function Dashboard() {
     setMessages((prev) => [...prev, { id: typingId, text: "...", sender: "ai", timestamp: new Date(), typing: true }]);
 
     try {
-      const context = assessmentResult?.recommendedJobs?.[0]
-        ? { topProfession: assessmentResult.recommendedJobs[0].profession, confidence: assessmentResult.recommendedJobs[0].confidence }
-        : null;
+      const context = {
+        userName: user?.name || null,
+        topProfession: assessmentResult?.recommendedJobs?.[0]?.profession || null,
+        confidence: assessmentResult?.recommendedJobs?.[0]?.confidence || null,
+        allProfessions: assessmentResult?.recommendedJobs?.map(j => j.profession) || [],
+        physicalScore: assessmentResult?.physicalScore || null,
+        communicationScore: assessmentResult?.communicationScore || null,
+        problemSolvingScore: assessmentResult?.problemSolvingScore || null,
+        personalityScore: assessmentResult?.personalityScore || null,
+      };
 
       const res = await fetch("http://localhost:5000/api/chat", {
         method: "POST",

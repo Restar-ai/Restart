@@ -27,10 +27,26 @@ export const chat = async (req, res) => {
       return res.status(503).json({ message: "Chat AI belum dikonfigurasi" })
     }
 
-    // Build system prompt with user context if available
+    // Build system prompt with user context
     let systemPrompt = SYSTEM_PROMPT
-    if (context?.topProfession) {
-      systemPrompt += `\n\nKonteks pengguna: Berdasarkan assessment, profesi paling cocok untuk pengguna ini adalah "${context.topProfession}" dengan tingkat kesesuaian ${Math.round((context.confidence || 0) * 100)}%.`
+
+    if (context) {
+      const lines = []
+
+      if (context.userName)
+        lines.push(`Nama pengguna: ${context.userName}. Sapa dengan namanya jika relevan.`)
+
+      if (context.topProfession)
+        lines.push(`Profesi paling cocok: "${context.topProfession}" (${Math.round((context.confidence || 0) * 100)}% kesesuaian).`)
+
+      if (context.allProfessions?.length > 1)
+        lines.push(`Top-3 profesi rekomendasi: ${context.allProfessions.join(", ")}.`)
+
+      if (context.physicalScore)
+        lines.push(`Skor assessment — Fisik: ${context.physicalScore}, Komunikasi: ${context.communicationScore}, Problem Solving: ${context.problemSolvingScore}, Kepribadian: ${context.personalityScore} (skala 1–5).`)
+
+      if (lines.length > 0)
+        systemPrompt += `\n\nData pengguna dari aplikasi:\n${lines.join("\n")}`
     }
 
     const response = await fetch(GROQ_API_URL, {
