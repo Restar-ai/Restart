@@ -118,31 +118,50 @@ export default function Dashboard() {
     else if (statType === "available") setActiveTab("available");
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (chatInput.trim() === "") return;
 
-    // Add user message
     const userMessage = {
-      id: messages.length + 1,
+      id: Date.now(),
       text: chatInput,
       sender: "user",
       timestamp: new Date(),
     };
 
-    setMessages([...messages, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
+    const currentInput = chatInput;
     setChatInput("");
 
-    // TODO: Send to AI backend later
-    // For now, just show a placeholder response after a delay
-    setTimeout(() => {
-      const aiResponse = {
-        id: messages.length + 2,
-        text: "Terima kasih atas pertanyaanmu! AI sedang diproses... 🤖",
+    // Typing indicator
+    const typingId = Date.now() + 1;
+    setMessages((prev) => [...prev, { id: typingId, text: "...", sender: "ai", timestamp: new Date(), typing: true }]);
+
+    try {
+      const context = assessmentResult?.recommendedJobs?.[0]
+        ? { topProfession: assessmentResult.recommendedJobs[0].profession, confidence: assessmentResult.recommendedJobs[0].confidence }
+        : null;
+
+      const res = await fetch("http://localhost:5000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: currentInput, context }),
+      });
+
+      const data = await res.json();
+      setMessages((prev) => prev.filter((m) => m.id !== typingId).concat({
+        id: Date.now() + 2,
+        text: data.reply || data.message || "Maaf, terjadi kesalahan.",
         sender: "ai",
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiResponse]);
-    }, 500);
+      }));
+    } catch {
+      setMessages((prev) => prev.filter((m) => m.id !== typingId).concat({
+        id: Date.now() + 2,
+        text: "Maaf, AI Assistant sedang tidak tersedia.",
+        sender: "ai",
+        timestamp: new Date(),
+      }));
+    }
   };
 
   if (!user || loading) {
