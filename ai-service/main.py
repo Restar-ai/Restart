@@ -66,9 +66,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="RESTART Career AI Service", lifespan=lifespan)
 
+import os
+_allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5000,http://localhost:5173").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5000", "http://localhost:5173"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
