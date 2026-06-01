@@ -128,15 +128,21 @@ export default function TrainerDashboard() {
     <div className="min-h-screen bg-[linear-gradient(180deg,_#F7F6EE_0%,_#FFFFFF_30%,_#F7F6EE_100%)]">
       <div className="border-b border-white/60 bg-white/78 backdrop-blur-xl shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-[#233B5E]">
-              Dashboard Pelatih
-            </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Pemantauan peserta dan progres pelatihan
-            </p>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <img
+              src="/logo_restart.png"
+              alt="Restart logo"
+              className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+            />
+            <div>
+              <h1 className="text-2xl font-bold text-[#233B5E]">
+                Dashboard Pelatih
+              </h1>
+              <p className="text-sm text-slate-500 mt-1">
+                Pemantauan peserta dan progres pelatihan
+              </p>
+            </div>
           </div>
-
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/profile")}

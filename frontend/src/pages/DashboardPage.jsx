@@ -9,6 +9,7 @@ import {
   FiUser,
   FiMaximize2,
   FiMinimize2,
+  FiAlertTriangle,
 } from "react-icons/fi";
 import * as courseApi from "../api/courseApi";
 import * as assessmentApi from "../api/assessmentApi";
@@ -36,6 +37,7 @@ export default function Dashboard() {
   ]);
   const [chatInput, setChatInput] = useState("");
   const [chatSending, setChatSending] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -88,7 +90,15 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogoutRequest = () => {
+    setShowLogoutModal(true);
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false);
+  };
+
+  const handleLogoutConfirm = async () => {
     try {
       if (user?.id) {
         await authApi.logoutUser(user.id);
@@ -98,6 +108,7 @@ export default function Dashboard() {
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      setShowLogoutModal(false);
       navigate("/");
     }
   };
@@ -232,13 +243,20 @@ export default function Dashboard() {
       <header className="sticky top-0 z-40 border-b" style={{backgroundColor: 'white', borderColor: '#CCD8E6'}}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold" style={{color: '#233B5E'}}>
-                Belajar
-              </h1>
-              <p className="text-xs sm:text-sm mt-0.5" style={{color: '#7D8293'}}>
-                Restart Career Platform
-              </p>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <img
+                src="/logo_restart.png"
+                alt="Restart logo"
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+              />
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold" style={{color: '#233B5E'}}>
+                  Belajar
+                </h1>
+                <p className="text-xs sm:text-sm mt-0.5" style={{color: '#7D8293'}}>
+                  Restart Career Platform
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button
@@ -250,7 +268,7 @@ export default function Dashboard() {
                 <span className="hidden sm:inline">Profile</span>
               </button>
               <button
-                onClick={handleLogout}
+                onClick={handleLogoutRequest}
                 className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-sm shadow-sm transition hover:-translate-y-0.5 hover:bg-red-50 hover:shadow-md border border-red-200 bg-white text-red-600"
               >
                 <FiLogOut size={16} />
@@ -696,6 +714,50 @@ export default function Dashboard() {
                 <FiSend size={14} />
               )}
             </button>
+          </div>
+        </div>
+      )}
+
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="relative w-full max-w-md rounded-3xl border border-red-100 bg-white/95 p-6 shadow-[0_24px_70px_rgba(185,28,28,0.18)] backdrop-blur-md">
+            <button
+              onClick={handleLogoutCancel}
+              className="absolute right-4 top-4 rounded-full p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+              aria-label="Tutup popup keluar"
+            >
+              <FiX size={18} />
+            </button>
+
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-red-100 text-red-600">
+                <FiAlertTriangle size={22} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-[#233B5E]">
+                  Yakin anda mau keluar dari akun ini?
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Anda akan keluar dari dashboard dan perlu login lagi untuk masuk kembali.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                onClick={handleLogoutCancel}
+                className="rounded-full border border-[#CCD8E6] px-4 py-2 text-sm font-semibold text-[#233B5E] transition hover:bg-[#F7F6EE]"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleLogoutConfirm}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+              >
+                <FiLogOut size={16} />
+                Keluar
+              </button>
+            </div>
           </div>
         </div>
       )}

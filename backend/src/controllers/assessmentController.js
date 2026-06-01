@@ -257,7 +257,7 @@ export const getAssessmentResult = (req, res) => {
           communicationScore: data.communication_score,
           problemSolvingScore: data.problem_solving_score,
           personalityScore: data.personality_score,
-          recommendedJobs: data.recommended_jobs,
+          recommendedJobs: JSON.parse(data.recommended_jobs || '[]'),
           completedAt: data.completed_at
         }
       })
