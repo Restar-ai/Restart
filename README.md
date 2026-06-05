@@ -35,7 +35,6 @@ restart-career-platform/
 │   └── requirements.txt
 ├── data-science/     # Data exploration, Notebooks, and Streamlit Dashboard
 │   ├── dataset/      # Master_Data_RESTART.csv
-│   ├── notebook/     # Capstone_Project_DS.ipynb
 │   └── dashboard/    # Streamlit app files
 └── package.json      # Root scripts for running backend and frontend
 ```
